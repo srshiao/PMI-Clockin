@@ -16,6 +16,7 @@ class Intern(models.Model):
 	def __str__(self):
    		return self.FName + " " + self.LName
 
+
 	FName = models.CharField(_("First Name"), max_length = 50, default = None)
 	LName = models.CharField(_("Last Name"), max_length = 50, default = None)
 	username = models.CharField(_("Username"), max_length = 50, default = None)

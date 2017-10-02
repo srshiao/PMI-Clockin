@@ -16,8 +16,8 @@ class WorkForm(forms.ModelForm):
       
         widgets = {
           'date' : extras.SelectDateWidget(empty_label="Nothing"),
+          'intern': autocomplete.ModelSelect2(url='intern-autocomplete')
 
-          
         }
 
 class WorkListFormHelper(FormHelper):    

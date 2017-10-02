@@ -226,10 +226,12 @@ def add_work(request):
 #@login_required
 class InternAutocomplete(autocomplete.Select2QuerySetView):
 	def get_queryset(self):
-		qs = Intern.objects.order_by('FName').distinct()
+		#qs = Intern.objects.order_by('FName').distinct()
+		qs = Intern.objects.all()
 		if self.q:
 		#qs = qs.filter(FName__exact='Sam')
-			qs = qs.filter(FName__istartswith=self.q)
+
+			qs = (qs.filter(FName__istartswith=self.q) or qs.filter(LName__istartswith=self.q))
 		return qs
 
 		#return render(autocomplete.Select2QuerySetView, 'timesheet/all_work_sessions.html', context)
