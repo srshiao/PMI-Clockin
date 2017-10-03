@@ -6,6 +6,7 @@ from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 from crispy_forms.bootstrap import InlineField, FormActions, StrictButton
 from django.forms import extras
 from dal import autocomplete
+from. views import *
 
 class WorkForm(forms.ModelForm):
 
@@ -37,6 +38,7 @@ class WorkListFormHelper(FormHelper):
              	#'employment_status',
               Submit('submit', 'Apply Filter'),
     )
+
 class ClockoutForm(forms.ModelForm):
     summary = forms.CharField( widget=forms.Textarea )
     class Meta:
