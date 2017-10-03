@@ -222,8 +222,6 @@ def add_work(request):
 	return render(request, 'timesheet/admin_add_work_session.html', context)
 
 
-#added by me to experiment
-#@login_required
 class InternAutocomplete(autocomplete.Select2QuerySetView):
 	def get_queryset(self):
 		#qs = Intern.objects.order_by('FName').distinct()
@@ -233,10 +231,6 @@ class InternAutocomplete(autocomplete.Select2QuerySetView):
 
 			qs = (qs.filter(FName__istartswith=self.q) or qs.filter(LName__istartswith=self.q))
 		return qs
-
-		#return render(autocomplete.Select2QuerySetView, 'timesheet/all_work_sessions.html', context)
-
-#experiment until here
 
 #not in current use. will be used as a Constituent Details Page
 #@login_required
