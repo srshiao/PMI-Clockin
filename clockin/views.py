@@ -20,6 +20,7 @@ from django.db.models import Q
 from django.views.generic.edit import UpdateView
 from .filters import *
 from django.conf import settings
+from .config import *
 
 
 def logout_page(request):
@@ -74,7 +75,7 @@ def add_new(request):
 	context = {
 		'form' : form,
 		'name' : name,
-		'token' : settings.SLACK_BOT_TOKEN,
+		'token' : SLACK_BOT_TOKEN,
 	}
 	if form.is_valid():
 		obj = form.save(commit=False)
@@ -119,7 +120,7 @@ def clockout(request, work_id):
 		'form' : form,
 		'pk' : work_id,
 		'name' : name,
-		'token' : settings.SLACK_BOT_TOKEN,
+		'token' : SLACK_BOT_TOKEN,
 	}
 
 	return render(request, 'timesheet/end_work_session.html', context)
