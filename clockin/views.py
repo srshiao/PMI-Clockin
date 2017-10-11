@@ -68,12 +68,14 @@ def past_time(request):
 #Clock in function
 def add_new(request):
 	form = ClockinForm(request.POST or None);
+	intern_obj = Intern.objects.filter(username = request.user)
+	name = intern_obj[0]
 	context = {
-		'form' : form
+		'form' : form,
+		'name' : name,
 	}
 	if form.is_valid():
 		obj = form.save(commit=False)
-		intern_obj = Intern.objects.filter(username = request.user)
 		obj.intern = intern_obj[0]
 		obj.time_in = datetime.datetime.now().time()
 		obj.active_session = True
@@ -88,8 +90,8 @@ def add_new(request):
 def clockout(request, work_id):
 	instance = get_object_or_404(Work, id=work_id)
 	form = ClockoutForm(request.POST or None, instance=instance)
-   
-
+	intern_obj = Intern.objects.filter(username = request.user)
+	name = intern_obj[0]
 	if form.is_valid():
 		obj = form.save(commit=False)
 		obj.time_out = datetime.datetime.now().time()
@@ -113,7 +115,8 @@ def clockout(request, work_id):
 		return HttpResponseRedirect('/clockin/')
 	context = {
 		'form' : form,
-		'pk' : work_id
+		'pk' : work_id,
+		'name' : name
 	}
 
 	return render(request, 'timesheet/end_work_session.html', context)
