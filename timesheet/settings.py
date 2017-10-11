@@ -128,7 +128,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+SLACK_BOT_TOKEN = "xoxp-188174792402-237245353986-254485223940-fa4544a70bd5c7b2ba99274d166ae626"
 
 
 # Static files (CSS, JavaScript, Images)

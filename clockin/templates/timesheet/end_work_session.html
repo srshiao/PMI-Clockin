@@ -159,7 +159,7 @@ http://www.tooplate.com/view/2082-pure-mix
  </form>
 {% endblock %}
     </div>
-<div id="name" hidden>{{name.FName}} {{name.LName}}</div>
+
 <script type="text/javascript">
 
 function notifySlack(){
@@ -179,10 +179,11 @@ function notifySlack(){
 	}
 	
 	var http = new XMLHttpRequest();
-	var name = document.getElementById("name").innerHTML;
+	var name = '{{name.FName}} {{name.LName}}';
 	var channel = "clockins"
 	var message = name + " clocked out at " + hours + ":" + minutes + " " + period + " on " + mm + "/" + dd + "/" + yyyy;
-	var path_to_call = "https://slack.com/api/chat.postMessage?token=xoxp-188174792402-237245353986-254332382627-71ffd7f9a51ac9d5c5d277dd6402f768&channel=" + channel + "&text=" + message + "&username=Sam%20Bot"
+	var token = '{{token}}'	
+	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=Sam%20Bot"
 	$.get(path_to_call, function(error, response, body) {
 		 if (error || response.statusCode == 200) {
 		     console.log(error);
