@@ -169,6 +169,7 @@ function notifySlack(){
 	var yyyy = today.getFullYear();
 	var hours = today.getHours();
 	var minutes = today.getMinutes();
+	var fminutes;
 	var period;
 	if(hours > 12){
 		hours = hours - 12;
@@ -177,11 +178,17 @@ function notifySlack(){
 	else{
 		period = "AM";
 	}
+	if(minutes < 10){
+		fminutes = " " + minutes
+	}
+	else{
+		fminutes = "" + minutes;
+	}
 	
 	var http = new XMLHttpRequest();
 	var name = '{{name.FName}} {{name.LName}}';
 	var channel = "clockins"
-	var message = name + " clocked out at " + hours + ":" + minutes + " " + period + " on " + mm + "/" + dd + "/" + yyyy;
+	var message = name + " clocked out at " + hours + ":" + fminutes + " " + period + " on " + mm + "/" + dd + "/" + yyyy;
 	var token = '{{token}}'	
 	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=Sam%20Bot"
 	$.get(path_to_call, function(error, response, body) {
