@@ -251,7 +251,7 @@ value= {{user.id}}   />
  //each time we add the cell to the total
  total_duration += parseFloat($(this).html());
  });
-
+ total_duration = parseFloat(total_duration.toFixed(2));
  //then output them to the elements
  $("#total_duration").html(total_duration);
 
