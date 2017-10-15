@@ -14,6 +14,7 @@ import os
 
 from django.contrib import admin
 admin.site.site_url = '/clockin'
+from .config import *
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -151,3 +152,15 @@ STATICFILES_DIRS = (
 )
 
 #FOR HEROKU
+
+#For imlpementing Auto generation of report using SMTP
+
+EMAIL_BACKEND = EMAIL_BACKEND
+EMAIL_HOST = EMAIL_HOST
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_PORT = EMAIL_PORT
+EMAIL_USE_TLS = EMAIL_USE_TLS
+
+
+# if using gmail make sure you unlock captcha in your gmail settings.

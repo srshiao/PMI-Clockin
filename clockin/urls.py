@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from .models import *
 from. import views
+from django.views.generic.base import TemplateView
+from .views import *
 
 #app_name = 'clockin'
 
@@ -15,8 +17,10 @@ urlpatterns = [
     url(r'^history/$', views.past_time, name= 'past'),
     url(r'^admin_edit/(?P<work_id>\d+)/$', views.edit_hours, name='edit_hours'),
     url(r'^new_hours/$', views.add_work, name= 'add_work'),
-    url(r'^intern-autocomplete/$',views.InternAutocomplete.as_view(),name='intern-autocomplete',)
-
+    url(r'^intern-autocomplete/$',views.InternAutocomplete.as_view(),name='intern-autocomplete',),
+    url(r'^email/send/$', views.sendmail, name = 'sendmail'),
+    url(r'^email/thankyou/$', TemplateView.as_view(template_name='timesheet/thankyou.html'), name='thankyou'),
+    url(r'^email/$', TemplateView.as_view(template_name='timesheet/email.html'), name='email'),
 
 
 

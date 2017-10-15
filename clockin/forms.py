@@ -7,6 +7,7 @@ from crispy_forms.bootstrap import InlineField, FormActions, StrictButton
 from django.forms import extras
 from dal import autocomplete
 from. views import *
+from django.core.validators import RegexValidator
 
 class WorkForm(forms.ModelForm):
 
@@ -37,10 +38,11 @@ class WorkListFormHelper(FormHelper):
              	#'HUBzone',
              	#'employment_status',
               Submit('submit', 'Apply Filter'),
-    )
+    ),
+
 
 class ClockoutForm(forms.ModelForm):
-    summary = forms.CharField( widget=forms.Textarea )
+    summary = forms.CharField( widget=forms.Textarea(attrs={'rows': 5, 'cols': 130,'placeholder': 'What work did you do today? (For payroll purposes)'}),validators=[RegexValidator(regex='^.{30,}$', message='The summary length has to be minimum 30 characters', code='nomatch')],label='')
     class Meta:
 
         model = Work
@@ -52,13 +54,14 @@ class ClockinForm(forms.ModelForm):
         model = Work
         fields = ()
 
-#added by me to experiemnt
-#class InternForm(forms.ModelForm):
-#    birth_country = forms.ModelChoiceField(
-#        queryset=Intern.objects.all(),
-#        widget=autocomplete.ModelSelect2(url='intern-autocomplete')
-#    )
-#experiment ends here
+#for report generation functionality
+
+
+class EmailForm(forms.Form):
+
+    email=forms.EmailField()
+    Botcheck = forms.CharField(max_length=5)
+
 #    class Meta:
  #       model = Person
   #      fields = ('__all__')

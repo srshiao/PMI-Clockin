@@ -1,0 +1,10 @@
+{% block title %}Contact Us{% endblock title %}
+    {% block content %}
+      <form method="POST" class="post-form">{% csrf_token %}
+          {{ form.as_p }}
+
+        <div class="button">
+          <input class="submitform" type="submit" name="submitform" value="Send Message" />
+        </div>
+      </form>
+    {% endblock content %}

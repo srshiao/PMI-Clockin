@@ -21,7 +21,7 @@ from django.views.generic.edit import UpdateView
 from .filters import *
 from django.conf import settings
 from .config import *
-
+from django.core.mail import send_mail
 
 def logout_page(request):
     logout(request)
@@ -130,7 +130,6 @@ def AdminView(request):
 	if not request.user.is_superuser:
 		return HttpResponseRedirect('/clockin/')
 	f = WorkListFilter(request.GET,queryset = Work.objects.filter(active_session=False))
-
 	context = {
 		'filter': f,
 	}
@@ -141,8 +140,15 @@ def AdminView(request):
 			if not ch == '':
 				url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
 				return HttpResponseRedirect(url)
-	###
+	if request.POST.get('report'):
+		html_message = loader.render_to_string('timesheet/get_report.html',{'filter':f })
+		url_one = reverse_lazy('sendmail')
+		return HttpResponseRedirect(url_one)
 
+	#	send_mail('Test email','message', 'PMIClockin@gmail.com',['PMIClockin@gmail.com'],html_message=html_message)
+
+	###
+	#send_mail('Test email', 'This is the second test email', 'para123testing@gmail.com', ['PMIClockin@gmail.com'])
 
 	return render(request, 'timesheet/all_work_sessions.html', context)
 
@@ -238,6 +244,32 @@ class InternAutocomplete(autocomplete.Select2QuerySetView):
 
 			qs = (qs.filter(FName__istartswith=self.q) or qs.filter(LName__istartswith=self.q))
 		return qs
+
+#for implementing report generation functionality
+@login_required
+def sendmail(request):
+		form = EmailForm(request.POST or None)
+		context = {
+			'form': form
+		}
+		if form.is_valid():
+			email = form.cleaned_data['email']
+			Botcheck = form.cleaned_data['Botcheck'].lower()
+			if Botcheck == 'yes':
+				try:
+				#f = WorkListFilter(request.GET, queryset=Work.objects.filter(active_session=False))
+
+				#html_message = loader.render_to_string('timesheet/get_report.html', {'filter':f})
+				#send_mail('Test email', 'message', 'para123testing@gmail.com', [email],html_message=html_message)
+					send_mail('Test email', 'message', 'para123testing@gmail.com', [email])
+					return HttpResponseRedirect('/clockin/email/thankyou/')
+				except:
+					return HttpResponseRedirect('/email/')
+			else:
+				return HttpResponseRedirect('/email/')
+
+
+		return render(request, 'timesheet/email.html',context)
 
 #not in current use. will be used as a Constituent Details Page
 #@login_required

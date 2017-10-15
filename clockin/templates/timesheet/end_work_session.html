@@ -137,21 +137,17 @@ http://www.tooplate.com/view/2082-pure-mix
 	<br>
 	</h1>
   <h3>
-  Thank You For The Hard Work!
+  Thank You For The Hard Work!<br>
+	<br>
   </h3>
     <div>
-    </br>
+    
 
 {% block content %}
     <h4> Please provide a summary of work completed this session </h4>
     <form method="POST" class="post-form">{% csrf_token %}
-    </br>
+    {{ form.as_p }}
 
-    {% render_field form.summary ROWS=5 COLS=100 class="form-control" placeholder="What work did you do today? (For payroll purposes)" %}
-
-    </br>
-
-</br>
         <button type="submit" class="save btn btn-default" onclick="notifySlack()">Clock Out</button>
         <a href="{% url 'home' %}" class='btn btn-default'>Return to Work</a>
 
