@@ -148,7 +148,7 @@ http://www.tooplate.com/view/2082-pure-mix
     <form method="POST" class="post-form">{% csrf_token %}
     {{ form.as_p }}
 
-        <button type="submit" class="save btn btn-default" onclick="notifySlack()">Clock Out</button>
+        <button type="submit" class="save btn btn-default" onclick="clockOut()">Clock Out</button>
         <a href="{% url 'home' %}" class='btn btn-default'>Return to Work</a>
 
 
@@ -157,14 +157,22 @@ http://www.tooplate.com/view/2082-pure-mix
     </div>
 
 <script type="text/javascript">
+function clockOut(){
+	var workSummary = document.getElementById('id_summary').value;
+	if(workSummary.length > 29){
+		notifySlack(workSummary);
+	}
+}
 
-function notifySlack(){
+
+function notifySlack(workSummary){
 	var today = new Date();
 	var dd = today.getDate();
 	var mm = today.getMonth() + 1;
 	var yyyy = today.getFullYear();
 	var hours = today.getHours();
 	var minutes = today.getMinutes();
+	var fminutes;
 	var period;
 	if(hours > 12){
 		hours = hours - 12;
@@ -173,13 +181,32 @@ function notifySlack(){
 	else{
 		period = "AM";
 	}
+	if(minutes < 10){
+		fminutes = "0" + minutes
+	}
+	else{
+		fminutes = "" + minutes;
+	}
 	
+	var time = hours + ":" + fminutes + " " + period
+	var date = mm + "/" + dd + "/" + yyyy;
 	var http = new XMLHttpRequest();
 	var name = '{{name.FName}} {{name.LName}}';
-	var channel = "clockins"
-	var message = name + " clocked out at " + hours + ":" + minutes + " " + period + " on " + mm + "/" + dd + "/" + yyyy;
-	var token = '{{token}}'	
-	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=Sam%20Bot"
+	var channel = "clockins";
+	var message = name + " clocked out at " + time + " on " + date;
+	var token = '{{token}}';
+	var username = "Sam%20Bot";
+	//notify #clockins that we are clocking out
+	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
+	$.get(path_to_call, function(error, response, body) {
+		 if (error || response.statusCode == 200) {
+		     console.log(error);
+		 }
+	});
+	//send worksummary to #worksummaries
+	channel = "worksummaries";
+	message = name + "'s work summary at " + time + " on " + date + ": " + workSummary; 
+	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
 	$.get(path_to_call, function(error, response, body) {
 		 if (error || response.statusCode == 200) {
 		     console.log(error);
