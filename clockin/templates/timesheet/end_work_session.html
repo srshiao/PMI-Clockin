@@ -194,7 +194,7 @@ function notifySlack(){
 	var channel = "clockins";
 	var message = name + " clocked out at " + time + " on " + date;
 	var token = '{{token}}';
-	var username = "Sam%20Bot";
+	var username = "sam-test";
 
 	//notify #clockins that we are clocking out
 	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
