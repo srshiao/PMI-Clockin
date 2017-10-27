@@ -193,7 +193,7 @@ function notifySlack(){
 	var date = mm + "/" + dd + "/" + yyyy;
 	var http = new XMLHttpRequest();
 	var name = '{{name.FName}} {{name.LName}}';
-	var channel = "clockins";
+	var channel = "av-test";
 	var message = name + " clocked in at " + time + " on " + date;
 	var token = '{{token}}';
 	var username = "sam-test";
