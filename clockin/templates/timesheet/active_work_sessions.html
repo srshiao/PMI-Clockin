@@ -127,7 +127,7 @@ http://www.tooplate.com/view/2082-pure-mix
     <table class="table table-bordered">
     <thead>
       <tr>
-        <th>Session</th>
+        <th>End Session</th>
         <th>Intern</th>
         <th>Date</th>
         <th>Time In</th>
@@ -154,10 +154,16 @@ value= {{user.id}}   checked>Current Session
     </tbody>
   </table>
    </div>
-   <div class = "add">
-      <a href="{% url 'add' %}"><button type="button" class = "btn btn-default">Clock In (Start New Session)</a>
-    </div>
-    <button type = "submit" class = "btn btn-default" name = "mybtn" value = "End Session">End Selected Session</button>
+   {% for user in filter %}
+     <div>
+      <button type = "submit" class = "btn btn-default" name = "mybtn" value = "End Session">Clock out</button>
+     </div>
+   {% empty %}
+     <div class = "add">
+        <a href="{% url 'add' %}"><button type="button" class = "btn btn-default">Clock In (Start New Session)</a>
+     </div>
+   {% endfor %}
+    
     </form>
 
 
