@@ -289,7 +289,7 @@ def sendmail(request):
 				start_date = datetime.date(2017, month, 16)
 				end_date = datetime.date(2017, month, 28)
 				exp = Work.objects.filter(date__range=(start_date, end_date))
-	exp1 = exp.values('user').annotate(total=Sum('duration'),sum=Concat('summary','user'))
+	exp1 = exp.values('user').annotate(total=Sum('duration'))
 
 
 		#return HttpResponse("yes success")
@@ -300,7 +300,7 @@ def sendmail(request):
 				#return HttpResponseRedirect('/email/')
 		#else:
 			#return HttpResponseRedirect('/email/')
-	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
+	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1,})
 @login_required
 def search(request):
 	user_list = Work.objects.all()
