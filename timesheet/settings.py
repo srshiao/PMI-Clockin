@@ -11,10 +11,17 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import sys
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
+sys.path.append(os.path.join(PROJECT_ROOT,'PMI-Intern-Signin'))
+
+from clockin.config import *
 
 from django.contrib import admin
 admin.site.site_url = '/clockin'
-from .config import *
+
+
+
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

@@ -22,6 +22,8 @@ from .filters import *
 from django.conf import settings
 from .config import *
 from django.core.mail import send_mail
+from django.db.models.functions import Concat
+
 
 def logout_page(request):
     logout(request)
@@ -129,7 +131,7 @@ def clockout(request, work_id):
 def AdminView(request):
 	if not request.user.is_superuser:
 		return HttpResponseRedirect('/clockin/')
-	f = WorkListFilter(request.GET,queryset = Work.objects.filter(active_session=False))
+	f = WorkListFilter(request.GET,queryset = Work.objects.filter(active_session = False))
 	context = {
 		'filter': f,
 	}
@@ -141,11 +143,12 @@ def AdminView(request):
 				url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
 				return HttpResponseRedirect(url)
 	if request.POST.get('report'):
-		html_message = loader.render_to_string('timesheet/get_report.html',{'filter':f })
+		html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
 		url_one = reverse_lazy('sendmail')
 		return HttpResponseRedirect(url_one)
 
-	#	send_mail('Test email','message', 'PMIClockin@gmail.com',['PMIClockin@gmail.com'],html_message=html_message)
+
+	#	send_mail('Test email','message', 'para123testing@gmail.com',['para123testing@gmail.com'],html_message=html_message)
 
 	###
 	#send_mail('Test email', 'This is the second test email', 'para123testing@gmail.com', ['PMIClockin@gmail.com'])
@@ -248,30 +251,74 @@ class InternAutocomplete(autocomplete.Select2QuerySetView):
 #for implementing report generation functionality
 @login_required
 def sendmail(request):
-		form = EmailForm(request.POST or None)
-		context = {
-			'form': form
-		}
-		if form.is_valid():
-			email = form.cleaned_data['email']
-			Botcheck = form.cleaned_data['Botcheck'].lower()
-			if Botcheck == 'yes':
-				try:
-				#f = WorkListFilter(request.GET, queryset=Work.objects.filter(active_session=False))
+	form = EmailForm(request.POST or None)
+	#start_date = datetime.date(2017, 9, 1)
+	#end_date = datetime.date(2017, 9, 15)
+	#exp = Work.objects.filter(date__range=(start_date, end_date))
+	exp = Work.objects.all()
+	print(form.is_valid())
+	if form.is_valid():
+		#obj = form.save(commit=False)
+		#obj.intern = obj.intern
+		month = int(form.cleaned_data['month'])
+		#month=3
+		pay_period = form.cleaned_data['pay_period']
+		email = form.cleaned_data['email']
+		Botcheck = form.cleaned_data['Botcheck'].lower()
+		print(pay_period)
+		print(month)
+		#if Botcheck == 'yes':
+		month_31=[1,3,5,7,8,10,12]
+		month_30=[4,6,9,11]
+		if pay_period=='First Pay Period':
+			start_date = datetime.date(2017,month,1)
+			end_date = datetime.date(2017,month,15)
+			exp = Work.objects.filter(date__range=(start_date,end_date))
+		elif pay_period=='Second Pay Period':
+			#if month == '01' or '03' or '05' or '07' or '08' or '10' or '12':
+			if month in month_31:
+				start_date = datetime.date(2017, month, 16)
+				end_date = datetime.date(2017, month, 31)
+				exp = Work.objects.filter(date__range=(start_date,end_date))
+			#elif month == '04' or '06' or '09' or '11':
+			elif month in month_30:
+				start_date = datetime.date(2017, month, 16)
+				end_date = datetime.date(2017, month, 30)
+				exp = Work.objects.filter(date__range=(start_date, end_date))
+			elif month == 2 :
+				start_date = datetime.date(2017, month, 16)
+				end_date = datetime.date(2017, month, 28)
+				exp = Work.objects.filter(date__range=(start_date, end_date))
+	exp1 = exp.values('user').annotate(total=Sum('duration'),sum=Concat('summary','user'))
 
-				#html_message = loader.render_to_string('timesheet/get_report.html', {'filter':f})
-				#send_mail('Test email', 'message', 'para123testing@gmail.com', [email],html_message=html_message)
-					send_mail('Test email', 'message', 'para123testing@gmail.com', [email])
-					return HttpResponseRedirect('/clockin/email/thankyou/')
-				except:
-					return HttpResponseRedirect('/email/')
-			else:
-				return HttpResponseRedirect('/email/')
+
+		#return HttpResponse("yes success")
+				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
+				#send_mail('Test email', 'message', 'para123testing@gmail.com', [email])
+				#return HttpResponseRedirect('/clockin/email/thankyou/')
+			#except:
+				#return HttpResponseRedirect('/email/')
+		#else:
+			#return HttpResponseRedirect('/email/')
+	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
+@login_required
+def search(request):
+	user_list = Work.objects.all()
+	user_filter = ReportFilter(request.GET, queryset=user_list)
+	Work_objs = user_filter.qs
+	Work_objs1 = user_filter.qs.annotate(sum=Concat('summary','user'))
+	#Work_objs2 = user_filter.qs
+	#res=Work_objs2.get()
+	#review_object = Work_objs.values('user').annotate(total=Sum('duration'))
+	review_object = Work_objs.values('user').annotate(total=Sum('duration'),sum=Concat('summary','summary'))
+	return render(request, 'timesheet/search.html', {'filter': user_filter,'obj':review_object,'obj1':Work_objs1})
 
 
-		return render(request, 'timesheet/email.html',context)
 
-#not in current use. will be used as a Constituent Details Page
+
+
+
+	#not in current use. will be used as a Constituent Details Page
 #@login_required
 #def detail(request, work_id):
 #	try:

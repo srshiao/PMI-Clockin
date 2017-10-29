@@ -29,7 +29,7 @@ class Intern(models.Model):
 
 class Work(models.Model):
 	user = models.CharField(_("User"),  max_length = 50, default = None)
-	intern = models.ForeignKey("Intern", default = 1)
+	intern = models.ForeignKey("Intern",default=1,blank=True)
 	date = models.DateField(_("Date"), default= datetime.date.today, blank=True)
 	time_in = models.TimeField(_("Time In"),default= datetime.datetime.now().time(), blank=True)
 	time_out = models.TimeField(_("Time Out"),default= datetime.datetime.now().time(), blank=True)

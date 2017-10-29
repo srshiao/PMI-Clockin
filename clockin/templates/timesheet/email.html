@@ -1,10 +1,16 @@
 {% block title %}Contact Us{% endblock title %}
     {% block content %}
-      <form method="POST" class="post-form">{% csrf_token %}
+      <form method="POST" action = #> {% csrf_token %}
           {{ form.as_p }}
 
         <div class="button">
           <input class="submitform" type="submit" name="submitform" value="Send Message" />
         </div>
       </form>
-    {% endblock content %}
+
+      <ul>
+        {% for user in exp %}
+          <li>{{ user.user }} - {{user.total}} -  {{ user.sum }}</li>{% endfor %}
+      </ul>
+
+    {% endblock %}
