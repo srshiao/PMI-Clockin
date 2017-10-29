@@ -137,34 +137,35 @@ http://www.tooplate.com/view/2082-pure-mix
 	<br>
 	</h1>
   <h3>
-  Thank You For The Hard Work!
+  Thank You For The Hard Work!<br>
+	<br>
   </h3>
     <div>
-    </br>
+    
 
 {% block content %}
     <h4> Please provide a summary of work completed this session </h4>
     <form method="POST" class="post-form">{% csrf_token %}
-    </br>
+    {{ form.as_p }}
 
-    {% render_field form.summary ROWS=5 COLS=100 class="form-control" placeholder="What work did you do today? (For payroll purposes)" %}
-
-    </br>
-
-</br>
-        <button type="submit" class="save btn btn-default" onclick="notifySlack()">Clock Out</button>
+        <button type="submit" class="save btn btn-default" onclick="clockOut()">Clock Out</button>
         <a href="{% url 'home' %}" class='btn btn-default'>Return to Work</a>
 
 
  </form>
 {% endblock %}
     </div>
-<!--button onclick="notifySlack()">Send slack Message</button-->
-
 
 <script type="text/javascript">
+function clockOut(){
+	var workSummary = document.getElementById('id_summary').value;
+	if(workSummary.length > 29){
+		notifySlack(workSummary);
+	}
+}
 
-function notifySlack(){
+
+function notifySlack(workSummary){
 	var today = new Date();
 	var dd = today.getDate();
 	var mm = today.getMonth() + 1;
@@ -194,8 +195,12 @@ function notifySlack(){
 	var channel = "av-test";
 	var message = name + " clocked out at " + time + " on " + date;
 	var token = '{{token}}';
+<<<<<<< HEAD
 	var username = "sam-test";
 
+=======
+	var username = "Sam%20Bot";
+>>>>>>> e1c421ed92823e222e9cc5d52b5c61bf3d1fc101
 	//notify #clockins that we are clocking out
 	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
 	$.get(path_to_call, function(error, response, body) {
@@ -203,10 +208,13 @@ function notifySlack(){
 		     console.log(error);
 		 }
 	});
-
 	//send worksummary to #worksummaries
+<<<<<<< HEAD
 	channel = "av-test";
 	var workSummary = document.getElementById('id_summary').value;
+=======
+	channel = "worksummaries";
+>>>>>>> e1c421ed92823e222e9cc5d52b5c61bf3d1fc101
 	message = name + "'s work summary at " + time + " on " + date + ": " + workSummary; 
 	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
 	$.get(path_to_call, function(error, response, body) {
