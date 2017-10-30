@@ -21,15 +21,15 @@ class Intern(models.Model):
 	LName = models.CharField(_("Last Name"), max_length = 50, default = None)
 	username = models.CharField(_("Username"), max_length = 50, default = None)
 #added for autocomplete
-	def __iter__(self):
-		for field in self._meta.get_fields(include_parents=True, include_hidden=False):
-			value = getattr(self, field.name, None)
+	#def __iter__(self):
+	#	for field in self._meta.get_fields(include_parents=True, include_hidden=False):
+	#		value = getattr(self, field.name, None)
 
-			yield (field, value)
+	#		yield (field, value)
 
 class Work(models.Model):
 	user = models.CharField(_("User"),  max_length = 50, default = None)
-	intern = models.ForeignKey("Intern",default=1,blank=True)
+	intern = models.ForeignKey("Intern",default=1,blank=True,null=True)
 	date = models.DateField(_("Date"), default= datetime.date.today, blank=True)
 	time_in = models.TimeField(_("Time In"),default= datetime.datetime.now().time(), blank=True)
 	time_out = models.TimeField(_("Time Out"),default= datetime.datetime.now().time(), blank=True)

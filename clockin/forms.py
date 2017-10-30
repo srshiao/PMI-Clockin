@@ -1,6 +1,6 @@
 
 from django import forms
-from .models import Work
+from .models import Work, Intern
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 from crispy_forms.bootstrap import InlineField, FormActions, StrictButton
@@ -59,19 +59,19 @@ class ClockinForm(forms.ModelForm):
 MONTH_CHOICE=[('01','Jan'),('02','Feb'),('03','Mar'),('04','Apr'),('05','May'),('06','Jun'),('07','Jul'),('08','Aug'),('09','Sep'),('10','Oct'),('11','Nov'),('12','Dec')]
 PAY_PERIOD=[('First Pay Period','First'),('Second Pay Period','Second')]
 
-class EmailForm(forms.Form):
-     #class Meta:
-     #    model = Work
-     #    fields = ('intern',)
-         #widgets = {
-         #    'intern': autocomplete.ModelSelect2(url='intern-autocomplete')
-         #}
-     month = forms.CharField(label = 'choose month',widget=forms.Select(choices=MONTH_CHOICE))
+class EmailForm(forms.ModelForm):
+     class Meta:
+         model = Work
+         fields = ('intern',)
+         widgets = {
+             'intern': autocomplete.ModelSelect2(url='intern-autocomplete')
+         }
+     month = forms.CharField(label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
      #year = forms.CharField(label = 'choose year',widget=forms.Select(choices=YEAR_CHOICE))
      #month = forms.CharField(label='choose month', widget=SelectDateWidget(years=range(1990, 2100)))
-     pay_period = forms.CharField(label='Pay_period',widget=forms.Select(choices=PAY_PERIOD))
+     pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
      email=forms.EmailField()
-     Botcheck = forms.CharField(max_length=5)
+     #Botcheck = forms.CharField(max_length=5)
 
 
 

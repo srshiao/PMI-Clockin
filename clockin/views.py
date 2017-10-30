@@ -23,7 +23,7 @@ from django.conf import settings
 from .config import *
 from django.core.mail import send_mail
 from django.db.models.functions import Concat
-
+from django.db.models import Count
 
 def logout_page(request):
     logout(request)
@@ -143,7 +143,7 @@ def AdminView(request):
 				url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
 				return HttpResponseRedirect(url)
 	if request.POST.get('report'):
-		html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
+		#html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
 		url_one = reverse_lazy('sendmail')
 		return HttpResponseRedirect(url_one)
 
@@ -258,13 +258,18 @@ def sendmail(request):
 	exp = Work.objects.all()
 	print(form.is_valid())
 	if form.is_valid():
-		#obj = form.save(commit=False)
-		#obj.intern = obj.intern
+		obj = form.save(commit=False)
+		if obj.intern:
+			print(1234)
+			user = obj.intern.username
+			exp= Work.objects.filter(user__contains=user)
+			print (exp)
+		#user = form.cleaned_data('intern')
 		month = int(form.cleaned_data['month'])
 		#month=3
 		pay_period = form.cleaned_data['pay_period']
 		email = form.cleaned_data['email']
-		Botcheck = form.cleaned_data['Botcheck'].lower()
+		#Botcheck = form.cleaned_data['Botcheck'].lower()
 		print(pay_period)
 		print(month)
 		#if Botcheck == 'yes':
@@ -273,34 +278,45 @@ def sendmail(request):
 		if pay_period=='First Pay Period':
 			start_date = datetime.date(2017,month,1)
 			end_date = datetime.date(2017,month,15)
-			exp = Work.objects.filter(date__range=(start_date,end_date))
+			exp = exp.filter(date__range=(start_date,end_date))
 		elif pay_period=='Second Pay Period':
 			#if month == '01' or '03' or '05' or '07' or '08' or '10' or '12':
 			if month in month_31:
 				start_date = datetime.date(2017, month, 16)
 				end_date = datetime.date(2017, month, 31)
-				exp = Work.objects.filter(date__range=(start_date,end_date))
+				exp = exp.filter(date__range=(start_date,end_date))
 			#elif month == '04' or '06' or '09' or '11':
 			elif month in month_30:
 				start_date = datetime.date(2017, month, 16)
 				end_date = datetime.date(2017, month, 30)
-				exp = Work.objects.filter(date__range=(start_date, end_date))
+				exp = exp.filter(date__range=(start_date, end_date))
 			elif month == 2 :
 				start_date = datetime.date(2017, month, 16)
 				end_date = datetime.date(2017, month, 28)
-				exp = Work.objects.filter(date__range=(start_date, end_date))
-	exp1 = exp.values('user').annotate(total=Sum('duration'),sum=Concat('summary','user'))
-
-
+				exp = exp.filter(date__range=(start_date, end_date))
+	exp1 = exp.values('intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
+	exp2 = exp.values('user').annotate(sum=Concat('summary','user'))
+	for i in exp:
+		print(i.intern)
+	rest=exp.values('intern').annotate(number_of_hours=Count('duration', distinct=True))
+	print(rest)
+	if request.POST.get('myemail'):
 		#return HttpResponse("yes success")
 				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
-				#send_mail('Test email', 'message', 'para123testing@gmail.com', [email])
-				#return HttpResponseRedirect('/clockin/email/thankyou/')
+		html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
+		send_mail('Test email', 'message', 'para123testing@gmail.com', [email],html_message=html_message)
+
+	#if request.POST.get('View Summary'):
+	#	temp= print(exp1[0])
+
+						#return HttpResponseRedirect('/clockin/email/thankyou/')
 			#except:
 				#return HttpResponseRedirect('/email/')
 		#else:
 			#return HttpResponseRedirect('/email/')
+
 	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
+
 @login_required
 def search(request):
 	user_list = Work.objects.all()

@@ -18,71 +18,25 @@
 
     <thead>
       <tr>
-        <th>Intern</th>
-        <th>Date</th>
-        <th>Time In</th>
-        <th>Time Out</th>
-        <th>Duration (Hours)</th>
-        <th>Work Done</th>
+        <th> Intern </th>
+        <th> Total Hours </th>
+        <th> Work Done </th>
 
 
       </tr>
     </thead>
     <tbody>
-      {% for user in filter.qs %}
+      {% for user in exp %}
         <tr>
-          <td>{{ user.intern}}</td>
-          <td>{{ user.date}}</td>
-          <td>{{ user.time_in}}</td>
-          <td>{{ user.time_out}}</td>
-          <td>{{user.duration}}</td>
-          <td> {{ user.summary }} </input></td>
-
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="5">No data</td>
-        </tr>
+          <td>{{ user.user }}</td>
+          <td>{{ user.total }}</td>
+          <td>{{ user.sum }}</td>
       {% endfor %}
     </tbody>
   </table>
 
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Total Hours (Between Pay Period Parameters)</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td id=total_duration></td>
-        </tr>
 
-    </tbody>
-  </table>
     </form>
-
-
-
-
-
-     <script type="text/javascript">
-
- //these will hold the totals
- var total_duration = 0;
-
- //reference the rows you want to add
- //this will not include the header row
- var rows = $("#time tr:gt(0)");
- rows.children("td:nth-child(6)").each(function() {
- //each time we add the cell to the total
- total_duration += parseFloat($(this).html());
-  });
-
- //then output them to the elements
- $("#total_duration").html(total_duration);
-
- </script>
 
 </html>
 
