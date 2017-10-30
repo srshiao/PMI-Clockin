@@ -316,7 +316,6 @@ def sendmail(request):
 			#return HttpResponseRedirect('/email/')
 
 	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
-
 @login_required
 def search(request):
 	user_list = Work.objects.all()
