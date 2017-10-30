@@ -70,7 +70,8 @@ class EmailForm(forms.ModelForm):
      #year = forms.CharField(label = 'choose year',widget=forms.Select(choices=YEAR_CHOICE))
      #month = forms.CharField(label='choose month', widget=SelectDateWidget(years=range(1990, 2100)))
      pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
-     email=forms.EmailField()
+     email=forms.CharField(label='Email')
+     #email = forms.EmailField(widget=forms.Textarea(attrs={'cols': 35, 'rows': 1, 'style': 'resize:none;'}))
      #Botcheck = forms.CharField(max_length=5)
 
 

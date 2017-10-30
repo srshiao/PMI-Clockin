@@ -1,20 +1,37 @@
-{% load static %}
-{% load widget_tweaks %}
-
-
+{%load static%}
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en">
+<head>
+<style>
+div.container {
+    display: inline-block;
+    position:relative;
+    overflow:auto;
+
+}
+table {
+    display: table;
+    position:relative;
+    border :1px solid black
+    border-collapse: collapse;
+    border-spacing: 20px;
+    border-color: gray;
+}
+
+</style>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
     <form action = # method = "POST"> {% csrf_token %}
 <!--
         {% for user in filter.qs%}
 
         {{user.intern}}<br>
 
-        {% endfor %} -->
-
+        {% endfor %}
+-->
   <table class="table table-bordered" id = "time">
-
 
     <thead>
       <tr>
@@ -28,7 +45,7 @@
     <tbody>
       {% for user in exp %}
         <tr>
-          <td>{{ user.user }}</td>
+          <td><strong>{{ user.intern__FName }} {{ user.intern__LName}}</strong></td>
           <td>{{ user.total }}</td>
           <td>{{ user.sum }}</td>
       {% endfor %}

@@ -148,42 +148,53 @@ http://www.tooplate.com/view/2082-pure-mix
 
 
 <section id="portfolio">
-    <!--
-    <form method="get">
+    <form action = # method = "POST"> {% csrf_token %}
+    <!--<form method="get">-->
     <div class="well">
-        <h4 style="margin-top: 0"><strong>Filter Interns</strong></h4>
+        <h4 style="margin-top: 0"><strong>Interns Summary</strong></h4>
+        <br>
       <div class="row">
-        <div class="form-group col-md-offset-3 col-md-3 col-sm-4">
-          {{ filter.form.intern.label_tag }}
-
-          {% render_field filter.form.intern class="form-control" %}
+        <div class="form-group col-md-offset-2 col-md-3 col-sm-4">
+            {{ form.intern.label_tag }}
+            {% render_field form.intern class="form-control" %}
+        </div>
+        <div class="form-group col-md-1 col-sm-2">
+            {{ form.pay_period.label_tag }}
+            {% render_field form.pay_period class="form-control" %}
+        </div>
+        <div class="form-group col-md-1 col-sm-2">
+            {{ form.month.label_tag }}
+            {% render_field form.month class="form-control" %}
         </div>
         <div class="form-group col-md-3 col-sm-4">
-          {{ filter.form.date_between.label_tag }}
-          {% render_field filter.form.date_between class="form-control" %}
+            {{ form.email.label_tag }}
+            {% render_field form.email class="form-control" %}
         </div>
-
-
       </div>
-      <button type="submit" class="btn btn-primary">
+        <div>
+           <!-- <input class="submitform" class = "btn btn-default" type="submit" name="submitform" value="Search" />-->
+            <button class = "btn btn-default" type="submit" name="submitform" value="Search" ><i class="fa fa-search"></i> Search</button>
+            <button type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email</button>
+        </div>
+<!--      <button type="submit" class="btn btn-primary">
         <span class="fa fa-search"></span> Search
-      </button>
+      </button> -->
     </div>
-  </form>
--->
-  <div>
+  <!--</form>-->
+
+<!--  <div>
     {% block content %}
 
     <form action = # method = "POST"> {% csrf_token %}
         {{ form.as_p }}
       <div>
           <input class="submitform" class = "btn btn-default" type="submit" name="submitform" value="Search" />
-          <type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email
+          <button type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email
         </div>
 
       </form>
     {% endblock %}
-  </div>
+  </div>-->
   <table class="table table-bordered" id = "time">
 
     <thead>
@@ -196,7 +207,7 @@ http://www.tooplate.com/view/2082-pure-mix
     <tbody>
       {% for user in exp %}
         <tr>
-          <td>{{ user.intern__FName}} {{user.intern__LName }}</td>
+            <td>{{ user.intern__FName}} {{user.intern__LName }}</td>
           <td>{{ user.total}}</td>
           <td><button type = "submit" class = "btn btn-default" name = "mybtn" value = {{user.id}}>View Summary</button></td>
         </tr>

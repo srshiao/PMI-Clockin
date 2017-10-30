@@ -21,9 +21,10 @@ from django.views.generic.edit import UpdateView
 from .filters import *
 from django.conf import settings
 from .config import *
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMultiAlternatives
 from django.db.models.functions import Concat
 from django.db.models import Count
+
 
 def logout_page(request):
     logout(request)
@@ -303,8 +304,10 @@ def sendmail(request):
 	if request.POST.get('myemail'):
 		#return HttpResponse("yes success")
 				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
-		html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
-		send_mail('Test email', 'message', 'para123testing@gmail.com', [email],html_message=html_message)
+		#html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
+		html_message = loader.get_template('timesheet/get_report.html').render( {'exp': exp1})
+
+		send_mail('Test email', 'message', 'PMIClockin@gmail.com', [email],html_message=html_message)
 
 	#if request.POST.get('View Summary'):
 	#	temp= print(exp1[0])
