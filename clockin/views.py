@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 import datetime
+import calendar
 from .filters import WorkListFilter
 from .forms import WorkListFormHelper
 from django.contrib.auth import logout
@@ -147,13 +148,6 @@ def AdminView(request):
 		#html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
 		url_one = reverse_lazy('sendmail')
 		return HttpResponseRedirect(url_one)
-
-
-	#	send_mail('Test email','message', 'para123testing@gmail.com',['para123testing@gmail.com'],html_message=html_message)
-
-	###
-	#send_mail('Test email', 'This is the second test email', 'para123testing@gmail.com', ['PMIClockin@gmail.com'])
-
 	return render(request, 'timesheet/all_work_sessions.html', context)
 
 @login_required
@@ -253,50 +247,32 @@ class InternAutocomplete(autocomplete.Select2QuerySetView):
 @login_required
 def sendmail(request):
 	form = EmailForm(request.POST or None)
-	#start_date = datetime.date(2017, 9, 1)
-	#end_date = datetime.date(2017, 9, 15)
-	#exp = Work.objects.filter(date__range=(start_date, end_date))
 	exp = Work.objects.all()
 	print(form.is_valid())
 	if form.is_valid():
 		obj = form.save(commit=False)
 		if obj.intern:
-			print(1234)
 			user = obj.intern.username
 			exp= Work.objects.filter(user__contains=user)
-			print (exp)
-		#user = form.cleaned_data('intern')
+		year = datetime.date.today().year
 		month = int(form.cleaned_data['month'])
-		#month=3
 		pay_period = form.cleaned_data['pay_period']
 		email = form.cleaned_data['email']
-		#Botcheck = form.cleaned_data['Botcheck'].lower()
-		print(pay_period)
-		print(month)
-		#if Botcheck == 'yes':
-		month_31=[1,3,5,7,8,10,12]
-		month_30=[4,6,9,11]
-		if pay_period=='First Pay Period':
-			start_date = datetime.date(2017,month,1)
-			end_date = datetime.date(2017,month,15)
-			exp = exp.filter(date__range=(start_date,end_date))
-		elif pay_period=='Second Pay Period':
-			#if month == '01' or '03' or '05' or '07' or '08' or '10' or '12':
-			if month in month_31:
-				start_date = datetime.date(2017, month, 16)
-				end_date = datetime.date(2017, month, 31)
+		if month in range(1,12):
+			if pay_period=='First Pay Period':
+				start_date = datetime.date(year,month,1)
+				end_date = datetime.date(year,month,15)
 				exp = exp.filter(date__range=(start_date,end_date))
-			#elif month == '04' or '06' or '09' or '11':
-			elif month in month_30:
-				start_date = datetime.date(2017, month, 16)
-				end_date = datetime.date(2017, month, 30)
+			elif pay_period=='Second Pay Period':
+				start_date = datetime.date(year, month, 16)
+				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
 				exp = exp.filter(date__range=(start_date, end_date))
-			elif month == 2 :
-				start_date = datetime.date(2017, month, 16)
-				end_date = datetime.date(2017, month, 28)
+			elif pay_period=='both':
+				start_date = datetime.date(year, month, 1)
+				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 				exp = exp.filter(date__range=(start_date, end_date))
+				
 	exp1 = exp.values('intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
-	exp2 = exp.values('user').annotate(sum=Concat('summary','user'))
 	for i in exp:
 		print(i.intern)
 	rest=exp.values('intern').annotate(number_of_hours=Count('duration', distinct=True))
@@ -325,9 +301,6 @@ def search(request):
 	user_filter = ReportFilter(request.GET, queryset=user_list)
 	Work_objs = user_filter.qs
 	Work_objs1 = user_filter.qs.annotate(sum=Concat('summary','user'))
-	#Work_objs2 = user_filter.qs
-	#res=Work_objs2.get()
-	#review_object = Work_objs.values('user').annotate(total=Sum('duration'))
 	review_object = Work_objs.values('user').annotate(total=Sum('duration'),sum=Concat('summary','summary'))
 	return render(request, 'timesheet/search.html', {'filter': user_filter,'obj':review_object,'obj1':Work_objs1})
 

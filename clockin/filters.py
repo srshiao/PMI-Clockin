@@ -16,9 +16,11 @@ class WorkListFilter(django_filters.FilterSet):
 		fields =  ('intern',)
 		order_by = ['intern__FName']
 
+
+
 MONTH_CHOICE=[('January','Jan'),('February','Feb'),('March','Mar'),('April','Apr'),('May','May'),('June','Jun'),('July','Jul'),('August','Aug'),('September','Sep'),('October','Oct'),('November','Nov'),('December','Dec')]
 PAY_PERIOD=[('First Pay Period','First'),('Second Pay Period','Second')]
-#MONTH_CHOICE=
+
 class ReportFilter(django_filters.FilterSet):
 	#month = django_filters.CharFilter(label='choose month', widget=forms.Select(choices=MONTH_CHOICE))
 	PAY_PERIOD = [('First Pay Period', 'First'), ('Second Pay Period', 'Second')]
