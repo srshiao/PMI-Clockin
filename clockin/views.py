@@ -252,6 +252,8 @@ def add_work(request):
 			obj.duration = 24
 		else:
 			obj.duration = hours
+		obj.duration = float(obj.duration)
+		obj.duration = round(obj.duration*4)/4
 		obj.save()
 		return HttpResponseRedirect('/clockin/')
 
