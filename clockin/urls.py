@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^home/$', views.work_list, name= 'home'),
     url(r'^current_session/$', views.crt_session, name= 'my_session'),
     url(r'^start_shift/$', views.add_new, name= 'add'),
+    url(r'^special_use/$', views.special_use, name= 'special_use'),
     url(r'^edit/(?P<work_id>\d+)/$', views.clockout, name='end_work_session'),
     url(r'^delete/(?P<pk>\d+)/$', views.workDelete.as_view(model = Work), name="work_delete"),
     url(r'^adminhome/$', views.AdminView, name= 'adminhome'),

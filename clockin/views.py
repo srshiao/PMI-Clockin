@@ -36,7 +36,9 @@ def work_list(request):
 	filter = Work.objects.filter(user=request.user).filter(active_session=True)
 
 	intern_obj = Intern.objects.filter(username = request.user)
-	name = intern_obj[0]
+	#name = intern_obj[0]
+	name = intern_obj.first()
+
 	context = {
 		'filter':filter,
 		'name' : name,
@@ -54,6 +56,38 @@ def work_list(request):
 	return render(request, 'timesheet/active_work_sessions.html', context)
 
 
+
+
+@login_required
+def special_use(request):
+	if request.user.is_superuser:
+		return render(request, 'timesheet/active_work_sessions.html')
+	filter = Work.objects.filter(user=request.user).filter(active_session=True)
+
+	intern_obj = Intern.objects.filter(username = request.user)
+	#name = intern_obj[0]
+	name = intern_obj.first()
+
+	context = {
+		'filter':filter,
+		'name' : name,
+	}
+
+###
+	if request.POST.get('mybtn'):
+			ch = request.POST.get('checkbox','')
+			if not ch == '':
+				url = reverse_lazy ('end_work_session', kwargs = {'work_id':ch})
+				return HttpResponseRedirect(url)
+###
+
+
+	return render(request, 'timesheet/active_work_sessions.html', context)
+
+
+
+
+
 #TGENERATES CURRENT SESSION PAGE. TABLE. 
 @login_required
 def crt_session(request):
@@ -62,7 +96,9 @@ def crt_session(request):
 	filter = Work.objects.filter(user=request.user).filter(active_session=True)
 
 	intern_obj = Intern.objects.filter(username = request.user)
-	name = intern_obj[0]
+	#name = intern_obj[0]
+	name = intern_obj.first()
+
 	context = {
 		'filter':filter,
 		'name' : name,
@@ -86,7 +122,9 @@ def past_time(request):
 	filter1 = Work.objects.filter(user=request.user).filter(active_session=False)
 
 	intern_obj = Intern.objects.filter(username = request.user)
-	name = intern_obj[0]
+	#name = intern_obj[0]
+	name = intern_obj.first()
+
 	context = {
 		'filter1':filter1,
 		'name' : name,
@@ -99,7 +137,8 @@ def past_time(request):
 def add_new(request):
 	form = ClockinForm(request.POST or None);
 	intern_obj = Intern.objects.filter(username = request.user)
-	name = intern_obj[0]
+	#name = intern_obj[0]
+	name = intern_obj.first()
 	context = {
 		'form' : form,
 		'name' : name,
@@ -107,7 +146,9 @@ def add_new(request):
 	}
 	if form.is_valid():
 		obj = form.save(commit=False)
-		obj.intern = intern_obj[0]
+		#obj.intern = intern_obj[0]
+		obj.intern = intern_obj.first()
+
 		obj.time_in = datetime.datetime.now().time()
 		obj.active_session = True
 		obj.user = request.user
@@ -123,7 +164,9 @@ def clockout(request, work_id):
 	instance = get_object_or_404(Work, id=work_id)
 	form = ClockoutForm(request.POST or None, instance=instance)
 	intern_obj = Intern.objects.filter(username = request.user)
-	name = intern_obj[0]
+	#name = intern_obj[0]
+	name = intern_obj.first()
+
 	if form.is_valid():
 		obj = form.save(commit=False)
 		obj.time_out = datetime.datetime.now().time()
