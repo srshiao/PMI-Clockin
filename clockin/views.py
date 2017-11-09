@@ -91,8 +91,8 @@ def special_use(request):
 #TGENERATES CURRENT SESSION PAGE. TABLE. 
 @login_required
 def crt_session(request):
-	if request.user.is_superuser:
-		return HttpResponseRedirect('/clockin/adminhome')
+#	if request.user.is_superuser:
+#		return HttpResponseRedirect('/clockin/adminhome')
 	filter = Work.objects.filter(user=request.user).filter(active_session=True)
 
 	intern_obj = Intern.objects.filter(username = request.user)
