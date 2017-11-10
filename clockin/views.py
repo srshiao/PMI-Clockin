@@ -308,15 +308,7 @@ def sendmail(request):
 			#return HttpResponseRedirect('/email/')
 
 	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
-@login_required
-def search(request):
-	user_list = Work.objects.all()
-	user_filter = ReportFilter(request.GET, queryset=user_list)
-	Work_objs = user_filter.qs
-	Work_objs1 = user_filter.qs.annotate(sum=Concat('summary','user'))
-	#dummy = request.session.get('dummy')
-	review_object = Work_objs.values('user').annotate(total=Sum('duration'),sum=Concat('summary','summary'))
-	return render(request, 'timesheet/search.html', {'filter': user_filter,'obj':dummy,'obj1':Work_objs1})
+
 
 
 

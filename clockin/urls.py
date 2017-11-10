@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^email/send/$', views.sendmail, name = 'email'),
     url(r'^email/intern_detail/$', TemplateView.as_view(template_name='timesheet/intern_detail.html'), name='intern_detail'),
     #url(r'^email/$', TemplateView.as_view(template_name='timesheet/email.html'), name='email'),
-    url(r'^search/$', views.search, name='search'),
+    
 
 
 
