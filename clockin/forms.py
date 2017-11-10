@@ -66,7 +66,7 @@ class EmailForm(forms.ModelForm):
          }
      month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
      pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
-     email=forms.CharField(label='Email')
+     email=forms.CharField(label='Email',required=False)
 
 #    class Meta:
  #       model = Person

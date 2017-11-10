@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse
 from .models import *
 from django.template import loader
@@ -7,7 +7,7 @@ from django.forms import ModelForm
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView
 from django.views.generic import TemplateView
@@ -146,7 +146,7 @@ def AdminView(request):
 				return HttpResponseRedirect(url)
 	if request.POST.get('report'):
 		#html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
-		url_one = reverse_lazy('sendmail')
+		url_one = reverse_lazy('email')
 		return HttpResponseRedirect(url_one)
 	return render(request, 'timesheet/all_work_sessions.html', context)
 
@@ -176,7 +176,7 @@ def edit_hours(request,work_id):
 			obj.duration = hours
 		obj.save()
 
-		return HttpResponseRedirect('/clockin/adminhome')
+		return HttpResponseRedirect('/clockin/email/send/')
 	context = {
 		'form' : form,
 		'pk' : work_id
@@ -257,7 +257,7 @@ def sendmail(request):
 		year = datetime.date.today().year
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
-		email = form.cleaned_data['email']
+		#email = form.cleaned_data['email']
 		if month in range(1,12):
 			if pay_period=='First Pay Period':
 				start_date = datetime.date(year,month,1)
@@ -271,25 +271,38 @@ def sendmail(request):
 				start_date = datetime.date(year, month, 1)
 				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 				exp = exp.filter(date__range=(start_date, end_date))
-				
-	exp1 = exp.values('intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
-	for i in exp:
-		print(i.intern)
-	rest=exp.values('intern').annotate(number_of_hours=Count('duration', distinct=True))
-	print(rest)
+
+	exp1 = exp.values('intern_id','intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
+	print (exp1)
 	if request.POST.get('myemail'):
 		#return HttpResponse("yes success")
 				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
 		#html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
+		email = form.cleaned_data['email']
 		html_message = loader.get_template('timesheet/get_report.html').render( {'exp': exp1})
-
 		send_mail('Test email', 'message', 'PMIClockin@gmail.com', [email],html_message=html_message)
 
-	#if request.POST.get('View Summary'):
+	if request.POST.get('mybtn1'):
+		print (1234)
+		#return HttpResponse("yes success")
+		che=request.POST.get('mybtn1')
+		print (che)
+		exp=exp.filter(intern__exact=che)
+		#dummy = list(exp.values())
+		#request.session['dummy'] = dummy
+		#url = reverse_lazy('thankyou', args=(exp,))
+		return render(request, 'timesheet/intern_detail.html', context={'exp': exp})
+	if request.POST.get('mybtn'):
+		ch = request.POST.get('checkbox','')
+		if not ch == '':
+			url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
+			return HttpResponseRedirect(url)
+		#return('intern_detail')
+		#return HttpResponseRedirect('/clockin/email/intern_detail/')
 	#	temp= print(exp1[0])
 
 						#return HttpResponseRedirect('/clockin/email/thankyou/')
-			#except:
+				#except:
 				#return HttpResponseRedirect('/email/')
 		#else:
 			#return HttpResponseRedirect('/email/')
@@ -301,8 +314,9 @@ def search(request):
 	user_filter = ReportFilter(request.GET, queryset=user_list)
 	Work_objs = user_filter.qs
 	Work_objs1 = user_filter.qs.annotate(sum=Concat('summary','user'))
+	#dummy = request.session.get('dummy')
 	review_object = Work_objs.values('user').annotate(total=Sum('duration'),sum=Concat('summary','summary'))
-	return render(request, 'timesheet/search.html', {'filter': user_filter,'obj':review_object,'obj1':Work_objs1})
+	return render(request, 'timesheet/search.html', {'filter': user_filter,'obj':dummy,'obj1':Work_objs1})
 
 
 

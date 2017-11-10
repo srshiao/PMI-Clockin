@@ -18,9 +18,9 @@ urlpatterns = [
     url(r'^admin_edit/(?P<work_id>\d+)/$', views.edit_hours, name='edit_hours'),
     url(r'^new_hours/$', views.add_work, name= 'add_work'),
     url(r'^intern-autocomplete/$',views.InternAutocomplete.as_view(),name='intern-autocomplete',),
-    url(r'^email/send/$', views.sendmail, name = 'sendmail'),
-    url(r'^email/thankyou/$', TemplateView.as_view(template_name='timesheet/thankyou.html'), name='thankyou'),
-    url(r'^email/$', TemplateView.as_view(template_name='timesheet/email.html'), name='email'),
+    url(r'^email/send/$', views.sendmail, name = 'email'),
+    url(r'^email/intern_detail/$', TemplateView.as_view(template_name='timesheet/intern_detail.html'), name='intern_detail'),
+    #url(r'^email/$', TemplateView.as_view(template_name='timesheet/email.html'), name='email'),
     url(r'^search/$', views.search, name='search'),
 
 
