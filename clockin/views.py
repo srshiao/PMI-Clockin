@@ -276,7 +276,7 @@ def sendmail(request):
 				start_date = datetime.date(year, month, 16)
 				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
 				exp = exp.filter(date__range=(start_date, end_date))
-			elif pay_period=='both':
+			elif pay_period=='Both Pay Periods':
 				start_date = datetime.date(year, month, 1)
 				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 				exp = exp.filter(date__range=(start_date, end_date))
