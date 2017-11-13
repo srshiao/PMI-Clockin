@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^start_shift/$', views.add_new, name= 'add'),
     url(r'^edit/(?P<work_id>\d+)/$', views.clockout, name='end_work_session'),
     url(r'^delete/(?P<pk>\d+)/$', views.workDelete.as_view(model = Work), name="work_delete"),
-    url(r'^adminhome/$', views.AdminView, name= 'adminhome'),
+    url(r'^adminhome/$', views.sendmail, name= 'adminhome'),
     url(r'^logout/$', views.logout_page, name = 'logout'),
     url(r'^history/$', views.past_time, name= 'past'),
     url(r'^admin_edit/(?P<work_id>\d+)/$', views.edit_hours, name='edit_hours'),

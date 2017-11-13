@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'bootstrap3',
     'widget_tweaks',
+    'django_inlinecss',
 ]
 
 MIDDLEWARE = [

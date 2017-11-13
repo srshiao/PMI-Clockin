@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse
 from .models import *
 from django.template import loader
+from django.template.loader import render_to_string
 from django.http import Http404
 from django.forms import ModelForm
 from .forms import *
@@ -22,9 +23,13 @@ from django.views.generic.edit import UpdateView
 from .filters import *
 from django.conf import settings
 from .config import *
-from django.core.mail import send_mail,EmailMultiAlternatives
+from django.core.mail import send_mail,EmailMultiAlternatives,EmailMessage
 from django.db.models.functions import Concat
 from django.db.models import Count
+#from django.core.mail.MIMEMultipart import MIMEMultipart
+#		from email.MIMEText import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 def logout_page(request):
@@ -129,26 +134,28 @@ def clockout(request, work_id):
 
 	return render(request, 'timesheet/end_work_session.html', context)
 
-@login_required
-def AdminView(request):
-	if not request.user.is_superuser:
-		return HttpResponseRedirect('/clockin/')
-	f = WorkListFilter(request.GET,queryset = Work.objects.filter(active_session = False))
-	context = {
-		'filter': f,
-	}
+#The original adminhome page. Currently not used
+
+#@login_required
+#def AdminView(request):
+#	if not request.user.is_superuser:
+#		return HttpResponseRedirect('/clockin/')
+#	f = WorkListFilter(request.GET,queryset = Work.objects.filter(active_session = False))
+#	context = {
+#		'filter': f,
+#	}
 
 	###
-	if request.POST.get('mybtn'):
-			ch = request.POST.get('checkbox','')
-			if not ch == '':
-				url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
-				return HttpResponseRedirect(url)
-	if request.POST.get('report'):
-		#html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
-		url_one = reverse_lazy('email')
-		return HttpResponseRedirect(url_one)
-	return render(request, 'timesheet/all_work_sessions.html', context)
+#	if request.POST.get('mybtn'):
+#			ch = request.POST.get('checkbox','')
+#			if not ch == '':
+#				url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
+#				return HttpResponseRedirect(url)
+#	if request.POST.get('report'):
+#		#html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
+#		url_one = reverse_lazy('email')
+#		return HttpResponseRedirect(url_one)
+#	return render(request, 'timesheet/all_work_sessions.html', context)
 
 @login_required
 def edit_hours(request,work_id):
@@ -246,7 +253,9 @@ class InternAutocomplete(autocomplete.Select2QuerySetView):
 #for implementing report generation functionality
 @login_required
 def sendmail(request):
-	form = EmailForm(request.POST or None)
+	if not request.user.is_superuser:
+		return HttpResponseRedirect('/clockin/')
+	form = InternSummaryForm(request.POST or None)
 	exp = Work.objects.all()
 	print(form.is_valid())
 	if form.is_valid():
@@ -279,8 +288,35 @@ def sendmail(request):
 				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
 		#html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
 		email = form.cleaned_data['email']
-		html_message = loader.get_template('timesheet/get_report.html').render( {'exp': exp1})
+		html_message = loader.get_template('timesheet/get_report.html').render({'exp':exp1})
 		send_mail('Test email', 'message', 'PMIClockin@gmail.com', [email],html_message=html_message)
+
+
+		#text_content = 'This is an important message.'
+		#html_content = loader.get_template('timesheet/get_report.html').render( {'exp': exp1})
+		#msg = EmailMultiAlternatives("Using EmailMultiAlternatives method", text_content,'PMIClockin@gmail.com' , [email])
+		#msg.attach_alternative(html_content, "text/html")
+		#msg.send()
+		# To implement html formatting in the mail body
+
+		# Create the root message and fill in the from, to, and subject headers
+		#msg_root = MIMEMultipart('related')
+		#msg_root.preamble = 'This is a multi-part message in MIME format.'
+
+		# Encapsulate the plain and HTML versions of the message body in an
+		# 'alternative' part, so message agents can decide which they want
+		# to display.
+		#msg_alternative = MIMEMultipart('alternative')
+		#msg_root.attach(msg_alternative)
+
+		# Attach HTML and text alternatives.
+
+		#msg_text = MIMEText(html_content.encode('ascii'), 'html', _charset='ascii')
+		#msg_alternative.attach(msg_text)
+		#send_mail('Test email', msg_root.as_string(), 'PMIClockin@gmail.com', [email])
+		#print (msg_root.as_string().encode('ascii'))
+		#smtp.sendmail(from_addr, to_addrs, msg_root.as_string())
+		#smtp.close()
 
 	if request.POST.get('mybtn1'):
 		print (1234)
@@ -288,15 +324,21 @@ def sendmail(request):
 		che=request.POST.get('mybtn1')
 		print (che)
 		exp=exp.filter(intern__exact=che)
+		#form1 = EmailForm(request.POST or None)
 		#dummy = list(exp.values())
 		#request.session['dummy'] = dummy
 		#url = reverse_lazy('thankyou', args=(exp,))
-		return render(request, 'timesheet/intern_detail.html', context={'exp': exp})
+		month_name = calendar.month_name[month]
+		if month:
+			return render(request, 'timesheet/intern_detail.html', context={'exp': exp,'pay_period':pay_period,'month':month_name})
+		else:
+			return render(request, 'timesheet/intern_detail_all.html', context={'exp': exp})
 	if request.POST.get('mybtn'):
 		ch = request.POST.get('checkbox','')
 		if not ch == '':
 			url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
 			return HttpResponseRedirect(url)
+
 		#return('intern_detail')
 		#return HttpResponseRedirect('/clockin/email/intern_detail/')
 	#	temp= print(exp1[0])

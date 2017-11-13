@@ -57,7 +57,7 @@ class ClockinForm(forms.ModelForm):
 MONTH_CHOICE=[('0','---'),('01','Jan'),('02','Feb'),('03','Mar'),('04','Apr'),('05','May'),('06','Jun'),('07','Jul'),('08','Aug'),('09','Sep'),('10','Oct'),('11','Nov'),('12','Dec')]
 PAY_PERIOD=[('First Pay Period','First'),('Second Pay Period','Second'),('both','Both')]
 
-class EmailForm(forms.ModelForm):
+class InternSummaryForm(forms.ModelForm):
      class Meta:
          model = Work
          fields = ('intern',)
@@ -67,6 +67,10 @@ class EmailForm(forms.ModelForm):
      month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
      pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
      email=forms.CharField(label='Email',required=False)
+
+#class EmailForm(forms.Form):
+#    email = forms.CharField(label='Email', required=False)
+
 
 #    class Meta:
  #       model = Person
