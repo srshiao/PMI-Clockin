@@ -183,7 +183,7 @@ def edit_hours(request,work_id):
 			obj.duration = hours
 		obj.save()
 
-		return HttpResponseRedirect('/clockin/email/send/')
+		return HttpResponseRedirect('/clockin/adminhome')
 	context = {
 		'form' : form,
 		'pk' : work_id
@@ -209,7 +209,7 @@ def edit_hours(request,work_id):
 #	return render(request, 'timesheet/active_work_sessions.html', context)
 class workDelete(DeleteView):
 	model = WorkForm
-	success_url = reverse_lazy('adminhome')
+	success_url = reverse_lazy('email')
 	template_name = 'timesheet/delete_work_session.html'
 
 
