@@ -209,7 +209,7 @@ def edit_hours(request,work_id):
 #	return render(request, 'timesheet/active_work_sessions.html', context)
 class workDelete(DeleteView):
 	model = WorkForm
-	success_url = reverse_lazy('email')
+	success_url = reverse_lazy('adminhome')
 	template_name = 'timesheet/delete_work_session.html'
 
 
