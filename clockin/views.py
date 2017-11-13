@@ -257,7 +257,7 @@ def sendmail(request):
 		return HttpResponseRedirect('/clockin/')
 	form = InternSummaryForm(request.POST or None)
 	exp = Work.objects.all()
-	print(form.is_valid())
+	#print(form.is_valid())
 	if form.is_valid():
 		obj = form.save(commit=False)
 		if obj.intern:
@@ -282,7 +282,7 @@ def sendmail(request):
 				exp = exp.filter(date__range=(start_date, end_date))
 
 	exp1 = exp.values('intern_id','intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
-	print (exp1)
+	#print (exp1)
 	if request.POST.get('myemail'):
 		#return HttpResponse("yes success")
 				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
@@ -319,10 +319,10 @@ def sendmail(request):
 		#smtp.close()
 
 	if request.POST.get('mybtn1'):
-		print (1234)
+		#print (1234)
 		#return HttpResponse("yes success")
 		che=request.POST.get('mybtn1')
-		print (che)
+		#print (che)
 		exp=exp.filter(intern__exact=che)
 		#form1 = EmailForm(request.POST or None)
 		#dummy = list(exp.values())
