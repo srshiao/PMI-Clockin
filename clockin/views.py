@@ -31,8 +31,8 @@ def logout_page(request):
 #TGENERATES MAIN PAGE. TABLE. 
 @login_required
 def work_list(request):
-	if request.user.is_superuser:
-		return HttpResponseRedirect('/clockin/adminhome')
+#	if request.user.is_superuser:
+#		return HttpResponseRedirect('/clockin/adminhome')
 	filter = Work.objects.filter(user=request.user).filter(active_session=True)
 
 	intern_obj = Intern.objects.filter(username = request.user)
@@ -54,39 +54,6 @@ def work_list(request):
 
 
 	return render(request, 'timesheet/active_work_sessions.html', context)
-
-
-
-
-@login_required
-def special_use(request):
-	if request.user.is_superuser:
-		return render(request, 'timesheet/active_work_sessions.html')
-	filter = Work.objects.filter(user=request.user).filter(active_session=True)
-
-	intern_obj = Intern.objects.filter(username = request.user)
-	#name = intern_obj[0]
-	name = intern_obj.first()
-
-	context = {
-		'filter':filter,
-		'name' : name,
-	}
-
-###
-	if request.POST.get('mybtn'):
-			ch = request.POST.get('checkbox','')
-			if not ch == '':
-				url = reverse_lazy ('end_work_session', kwargs = {'work_id':ch})
-				return HttpResponseRedirect(url)
-###
-
-
-	return render(request, 'timesheet/active_work_sessions.html', context)
-
-
-
-
 
 #TGENERATES CURRENT SESSION PAGE. TABLE. 
 @login_required
