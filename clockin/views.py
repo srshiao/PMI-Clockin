@@ -211,6 +211,8 @@ def edit_hours(request,work_id):
 			obj.duration = new_hours 
 		else:
 			obj.duration = hours
+		obj.duration = float(obj.duration)
+		obj.duration = round(obj.duration*4)/4
 		obj.save()
 
 		return HttpResponseRedirect('/clockin/adminhome')
