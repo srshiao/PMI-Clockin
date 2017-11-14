@@ -68,12 +68,5 @@ class InternSummaryForm(forms.ModelForm):
      pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
      email=forms.CharField(label='Email',required=False)
 
-#class EmailForm(forms.Form):
-#    email = forms.CharField(label='Email', required=False)
-
-
-#    class Meta:
- #       model = Person
-  #      fields = ('__all__')
 
 

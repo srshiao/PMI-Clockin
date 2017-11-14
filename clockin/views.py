@@ -40,12 +40,9 @@ def logout_page(request):
 #TGENERATES MAIN PAGE. TABLE. 
 @login_required
 def work_list(request):
-#	if request.user.is_superuser:
-#		return HttpResponseRedirect('/clockin/adminhome')
 	filter = Work.objects.filter(user=request.user).filter(active_session=True)
 
 	intern_obj = Intern.objects.filter(username = request.user)
-	#name = intern_obj[0]
 	name = intern_obj.first()
 
 	context = {
@@ -53,13 +50,12 @@ def work_list(request):
 		'name' : name,
 	}
 
-###
 	if request.POST.get('mybtn'):
 			ch = request.POST.get('checkbox','')
+			#check to see if anything has been checked
 			if not ch == '':
 				url = reverse_lazy ('end_work_session', kwargs = {'work_id':ch})
 				return HttpResponseRedirect(url)
-###
 
 
 	return render(request, 'timesheet/active_work_sessions.html', context)
@@ -67,12 +63,9 @@ def work_list(request):
 #TGENERATES CURRENT SESSION PAGE. TABLE. 
 @login_required
 def crt_session(request):
-#	if request.user.is_superuser:
-#		return HttpResponseRedirect('/clockin/adminhome')
 	filter = Work.objects.filter(user=request.user).filter(active_session=True)
 
 	intern_obj = Intern.objects.filter(username = request.user)
-	#name = intern_obj[0]
 	name = intern_obj.first()
 
 	context = {
@@ -98,7 +91,6 @@ def past_time(request):
 	filter1 = Work.objects.filter(user=request.user).filter(active_session=False)
 
 	intern_obj = Intern.objects.filter(username = request.user)
-	#name = intern_obj[0]
 	name = intern_obj.first()
 
 	context = {
@@ -113,7 +105,6 @@ def past_time(request):
 def add_new(request):
 	form = ClockinForm(request.POST or None);
 	intern_obj = Intern.objects.filter(username = request.user)
-	#name = intern_obj[0]
 	name = intern_obj.first()
 	context = {
 		'form' : form,
@@ -122,7 +113,6 @@ def add_new(request):
 	}
 	if form.is_valid():
 		obj = form.save(commit=False)
-		#obj.intern = intern_obj[0]
 		obj.intern = intern_obj.first()
 
 		obj.time_in = datetime.datetime.now().time()
@@ -140,7 +130,6 @@ def clockout(request, work_id):
 	instance = get_object_or_404(Work, id=work_id)
 	form = ClockoutForm(request.POST or None, instance=instance)
 	intern_obj = Intern.objects.filter(username = request.user)
-	#name = intern_obj[0]
 	name = intern_obj.first()
 
 	if form.is_valid():
@@ -174,29 +163,6 @@ def clockout(request, work_id):
 	}
 
 	return render(request, 'timesheet/end_work_session.html', context)
-
-#The original adminhome page. Currently not used
-
-#@login_required
-#def AdminView(request):
-#	if not request.user.is_superuser:
-#		return HttpResponseRedirect('/clockin/')
-#	f = WorkListFilter(request.GET,queryset = Work.objects.filter(active_session = False))
-#	context = {
-#		'filter': f,
-#	}
-
-	###
-#	if request.POST.get('mybtn'):
-#			ch = request.POST.get('checkbox','')
-#			if not ch == '':
-#				url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
-#				return HttpResponseRedirect(url)
-#	if request.POST.get('report'):
-#		#html_message = loader.render_to_string('timesheet/get_report.html', {'filter': f})
-#		url_one = reverse_lazy('email')
-#		return HttpResponseRedirect(url_one)
-#	return render(request, 'timesheet/all_work_sessions.html', context)
 
 @login_required
 def edit_hours(request,work_id):
@@ -234,22 +200,6 @@ def edit_hours(request,work_id):
 
 	return render(request, 'timesheet/edit_hours.html', context)
 
-
-
-
-
-#NOT USED
-
-#Don't worry about this one. 
-#def index(request):
-#	table = WorkTable(Work.objects.all())
-#	context = {
-#		'table': table,
-#
-#	}
-#
-#	RequestConfig(request).configure(table)
-#	return render(request, 'timesheet/active_work_sessions.html', context)
 class workDelete(DeleteView):
 	model = WorkForm
 	success_url = reverse_lazy('adminhome')
@@ -287,10 +237,8 @@ def add_work(request):
 
 class InternAutocomplete(autocomplete.Select2QuerySetView):
 	def get_queryset(self):
-		#qs = Intern.objects.order_by('FName').distinct()
 		qs = Intern.objects.all()
 		if self.q:
-		#qs = qs.filter(FName__exact='Sam')
 
 			qs = (qs.filter(FName__istartswith=self.q) or qs.filter(LName__istartswith=self.q))
 		return qs
@@ -302,7 +250,6 @@ def sendmail(request):
 		return HttpResponseRedirect('/clockin/')
 	form = InternSummaryForm(request.POST or None)
 	exp = Work.objects.all()
-	#print(form.is_valid())
 	if form.is_valid():
 		obj = form.save(commit=False)
 		if obj.intern:
@@ -326,8 +273,7 @@ def sendmail(request):
 				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 				exp = exp.filter(date__range=(start_date, end_date))
 
-	exp1 = exp.values('intern_id','intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
-	#print (exp1)
+	exp1 = exp.values('intern_id','intern__FName','intern__LName').annotate(total=Sum('duration'))
 	if request.POST.get('myemail'):
 		email = form.cleaned_data['email']
 		html_message = loader.get_template('timesheet/get_report.html').render({'exp':exp1})

@@ -192,10 +192,10 @@ function notifySlack(workSummary){
 	var date = mm + "/" + dd + "/" + yyyy;
 	var http = new XMLHttpRequest();
 	var name = '{{name.FName}} {{name.LName}}';
-	var channel = "av-test";
+	var channel = "sam-test";
 	var message = name + " clocked out at " + time + " on " + date;
 	var token = '{{token}}';
-	var username = "AV Bot"
+	var username = "Sam Bot"
 	//notify #clockins that we are clocking out
 	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
 	$.get(path_to_call, function(error, response, body) {
@@ -204,7 +204,7 @@ function notifySlack(workSummary){
 		 }
 	});
 	//send worksummary to #worksummaries
-	channel = "av-test";
+	channel = "sam-test";
 	message = name + "'s work summary at " + time + " on " + date + ": " + workSummary; 
 	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
 	$.get(path_to_call, function(error, response, body) {
