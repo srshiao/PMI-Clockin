@@ -1,6 +1,6 @@
 
 from django import forms
-from .models import Work
+from .models import Work, Intern
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 from crispy_forms.bootstrap import InlineField, FormActions, StrictButton
@@ -8,7 +8,10 @@ from django.forms import extras
 from dal import autocomplete
 from. views import *
 from django.core.validators import RegexValidator
+<<<<<<< HEAD
 
+=======
+>>>>>>> Abhijith-branch
 class WorkForm(forms.ModelForm):
 
     class Meta:
@@ -54,13 +57,23 @@ class ClockinForm(forms.ModelForm):
         model = Work
         fields = ()
 
-#for report generation functionality
+MONTH_CHOICE=[('0','---'),('01','Jan'),('02','Feb'),('03','Mar'),('04','Apr'),('05','May'),('06','Jun'),('07','Jul'),('08','Aug'),('09','Sep'),('10','Oct'),('11','Nov'),('12','Dec')]
+PAY_PERIOD=[('First Pay Period','First'),('Second Pay Period','Second'),('Both Pay Periods ','Both')]
 
+class InternSummaryForm(forms.ModelForm):
+     class Meta:
+         model = Work
+         fields = ('intern',)
+         widgets = {
+             'intern': autocomplete.ModelSelect2(url='intern-autocomplete')
+         }
+     month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
+     pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
+     email=forms.CharField(label='Email',required=False)
 
-class EmailForm(forms.Form):
+#class EmailForm(forms.Form):
+#    email = forms.CharField(label='Email', required=False)
 
-    email=forms.EmailField()
-    Botcheck = forms.CharField(max_length=5)
 
 #    class Meta:
  #       model = Person

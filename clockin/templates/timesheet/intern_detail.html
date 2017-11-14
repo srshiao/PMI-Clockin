@@ -30,20 +30,6 @@ table {
 
     <script type="text/javascript" src="/static/collected/admin/js/vendor/jquery/jquery.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/select2.css' %}" />
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/jquery.init.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/autocomplete.init.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/select2.js' %}"></script>
-
-    <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}" />
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/vendor/select2/dist/js/select2.full.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/forward.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 <!--
 
@@ -121,9 +107,7 @@ http://www.tooplate.com/view/2082-pure-mix
 </div>
 
   <div  style="position: absolute; top: 25px; right: 15px; text-align:right; display:inline-block;">
-      <a href="{% url 'home' %}"><button type="button" class = "btn btn-default">Clock-in App</a>
       <a href="{% url 'logout' %}"><button type="button" class = "btn btn-default">Log Out</a>
-
 
   </div>
 <!-- Header section
@@ -134,8 +118,7 @@ http://www.tooplate.com/view/2082-pure-mix
 
             <div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8">
           <div class="header-thumb">
-              <h1 class="wow fadeIn" data-wow-delay="1.6s">Paradyme Interns Time Sheet</h1>
-              <h2 class="wow fadeIn" data-wow-delay="1.6s">Time Sheet</h2>
+              <h1 class="wow fadeIn" data-wow-delay="1.6s">Paradyme Intern Details</h1>
           </div>
             </div>
 
@@ -151,59 +134,41 @@ http://www.tooplate.com/view/2082-pure-mix
 
 
 <section id="portfolio">
-    <form method="get">
-    <div class="well">
-        <h4 style="margin-top: 0"><strong>Filter Interns</strong></h4>
-      <div class="row">
-        <div class="form-group col-md-offset-3 col-md-3 col-sm-4">
-          {{ filter.form.intern.label_tag }}
-
-          {% render_field filter.form.intern class="form-control" %}
-        </div>
-        <div class="form-group col-md-3 col-sm-4">
-          {{ filter.form.date_between.label_tag }}
-          {% render_field filter.form.date_between class="form-control" %}
-        </div>
-
-
-      </div>
-      <button type="submit" class="btn btn-primary">
-        <span class="fa fa-search"></span> Search
-      </button>
-    </div>
-  </form>
 
     <form action = # method = "POST"> {% csrf_token %}
 
+         <div class="well">
+             <h4 style="margin-top: 0">Details for <strong>{{exp.0.intern}}</strong> during the <strong>{{ pay_period}}</strong> of <strong>{{ month }}</strong></h4>
+             <br>
   <table class="table table-bordered" id = "time">
-      
-     
+
+
     <thead>
       <tr>
-        <th>Edit</th>
-        <th>Intern</th>
-        <th>Date</th>
-        <th>Time In</th>
-        <th>Time Out</th>
-        <th>Duration (Hours)</th>
-        <th>Work Done</th>
-        
-        
+        <th><strong>Edit</strong></th>
+          <th><strong>Intern</strong></th>
+          <th><strong>Date</strong></th>
+          <th><strong>Time In</strong></th>
+          <th><strong>Time Out</strong></th>
+          <th><strong>Duration (Hours)</strong></th>
+          <th><strong>Work Done</strong></th>
+
+
       </tr>
     </thead>
     <tbody>
-      {% for user in filter.qs %}
+      {% for user in exp %}
         <tr>
         <td>
-                <input type="radio" name="checkbox" id="checkbox[]"
+                <input type="radio" required name="checkbox" id="checkbox[]"
 value= {{user.id}}   />
                 </td>
           <td>{{ user.intern}}</td>
           <td>{{ user.date}}</td>
           <td>{{ user.time_in}}</td>
           <td>{{ user.time_out}}</td>
- 
-          
+
+
           <td>
 
             {{user.duration}}
@@ -218,27 +183,26 @@ value= {{user.id}}   />
       {% endfor %}
     </tbody>
   </table>
+        <br>
 
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Total Hours (Between Pay Period Parameters)</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td id=total_duration></td>
-        </tr>
-
-    </tbody>
-  </table>
+        <div class="col-md-2 col-sm-1">
+            <span><strong>Total hours:</strong></span>
+            <span id=total_duration></span></div>
+<br><br>
+  <div>
   <a href="{% url 'add_work' %}" class='btn btn-default'>Add Hours</a>
-  <button type = "submit" class = "btn btn-default" name = "report" value = "End Session">Get Report</button>
+  <a href="{% url 'adminhome' %}" class='btn btn-default'>Back</a>
   <button type = "submit" class = "btn btn-default" name = "mybtn" value = "End Session">Edit</button>
+  </div>
+         </div>           <br>
+    <!--    <div class="row">
+        <div class="form-group col-md-offset-5 col-md-3">
+            {{ form.email.label_tag }}
+            {% render_field form.email class="form-control" %}
+        <button type = "submit" class = "btn btn-default" name = "myemail" value="End Session" formnovalidate >Send Email</button>
+        </div> -->
+
     </form>
-
-
-
 
 
      <script type="text/javascript">
@@ -252,8 +216,7 @@ value= {{user.id}}   />
  rows.children("td:nth-child(6)").each(function() {
  //each time we add the cell to the total
  total_duration += parseFloat($(this).html());
- });
- total_duration = parseFloat(total_duration.toFixed(2));
+  });
 
  //then output them to the elements
  $("#total_duration").html(total_duration);

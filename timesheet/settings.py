@@ -11,10 +11,18 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import sys
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
+sys.path.append(os.path.join(PROJECT_ROOT,'PMI-Intern-Signin'))
+
+from clockin.config import *
 
 from django.contrib import admin
 admin.site.site_url = '/clockin'
 from clockin.config import *
+
+
+
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -51,6 +59,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'bootstrap3',
     'widget_tweaks',
+    'django_inlinecss',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +170,5 @@ EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_PORT = EMAIL_PORT
 EMAIL_USE_TLS = EMAIL_USE_TLS
-
 
 # if using gmail make sure you unlock captcha in your gmail settings.
