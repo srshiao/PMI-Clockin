@@ -90,6 +90,10 @@ http://www.tooplate.com/view/2082-pure-mix
 
 
   <div  style="position: absolute; top: 25px; right: 15px; text-align:right; display:inline-block;">
+      {% if request.user.is_superuser %}
+        <a href="{% url 'adminhome' %}" class='btn btn-default'>Admin Home</a>
+      {% endif %}
+
       <a href="{% url 'past' %}"><button type="button" class = "btn btn-default">Past Logs</a>
       <a href="{% url 'logout' %}"><button type="button" class = "btn btn-default">Log Out</a>
 
