@@ -8,10 +8,7 @@ from django.forms import extras
 from dal import autocomplete
 from. views import *
 from django.core.validators import RegexValidator
-<<<<<<< HEAD
 
-=======
->>>>>>> Abhijith-branch
 class WorkForm(forms.ModelForm):
 
     class Meta:
