@@ -280,7 +280,7 @@ def add_work(request):
 		obj.duration = float(obj.duration)
 		obj.duration = round(obj.duration*4)/4
 		obj.save()
-		return HttpResponseRedirect('/clockin/')
+		return HttpResponseRedirect('/clockin/adminhome/')
 
 	return render(request, 'timesheet/admin_add_work_session.html', context)
 
@@ -329,50 +329,13 @@ def sendmail(request):
 	exp1 = exp.values('intern_id','intern__FName','intern__LName').annotate(total=Sum('duration'))#sum=Concat('summary','user'))
 	#print (exp1)
 	if request.POST.get('myemail'):
-		#return HttpResponse("yes success")
-				#review_object = Work.objects.values('intern').annotate(total=Sum('duration'))
-		#html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
 		email = form.cleaned_data['email']
 		html_message = loader.get_template('timesheet/get_report.html').render({'exp':exp1})
 		send_mail('Test email', 'message', 'PMIClockin@gmail.com', [email],html_message=html_message)
 
-
-		#text_content = 'This is an important message.'
-		#html_content = loader.get_template('timesheet/get_report.html').render( {'exp': exp1})
-		#msg = EmailMultiAlternatives("Using EmailMultiAlternatives method", text_content,'PMIClockin@gmail.com' , [email])
-		#msg.attach_alternative(html_content, "text/html")
-		#msg.send()
-		# To implement html formatting in the mail body
-
-		# Create the root message and fill in the from, to, and subject headers
-		#msg_root = MIMEMultipart('related')
-		#msg_root.preamble = 'This is a multi-part message in MIME format.'
-
-		# Encapsulate the plain and HTML versions of the message body in an
-		# 'alternative' part, so message agents can decide which they want
-		# to display.
-		#msg_alternative = MIMEMultipart('alternative')
-		#msg_root.attach(msg_alternative)
-
-		# Attach HTML and text alternatives.
-
-		#msg_text = MIMEText(html_content.encode('ascii'), 'html', _charset='ascii')
-		#msg_alternative.attach(msg_text)
-		#send_mail('Test email', msg_root.as_string(), 'PMIClockin@gmail.com', [email])
-		#print (msg_root.as_string().encode('ascii'))
-		#smtp.sendmail(from_addr, to_addrs, msg_root.as_string())
-		#smtp.close()
-
 	if request.POST.get('mybtn1'):
-		#print (1234)
-		#return HttpResponse("yes success")
 		che=request.POST.get('mybtn1')
-		#print (che)
 		exp=exp.filter(intern__exact=che)
-		#form1 = EmailForm(request.POST or None)
-		#dummy = list(exp.values())
-		#request.session['dummy'] = dummy
-		#url = reverse_lazy('thankyou', args=(exp,))
 		month_name = calendar.month_name[month]
 		if month:
 			return render(request, 'timesheet/intern_detail.html', context={'exp': exp,'pay_period':pay_period,'month':month_name})
@@ -384,31 +347,7 @@ def sendmail(request):
 			url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
 			return HttpResponseRedirect(url)
 
-		#return('intern_detail')
-		#return HttpResponseRedirect('/clockin/email/intern_detail/')
-	#	temp= print(exp1[0])
-
-						#return HttpResponseRedirect('/clockin/email/thankyou/')
-				#except:
-				#return HttpResponseRedirect('/email/')
-		#else:
-			#return HttpResponseRedirect('/email/')
-
 	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
 
-
-
-
-
-
-
-	#not in current use. will be used as a Constituent Details Page
-#@login_required
-#def detail(request, work_id):
-#	try:
-#		person = Work.objects.get(pk=work_id)
-#	except Work.DoesNotExist:
-#		raise Http404("Log does not exist")
-#	return render(request, 'timesheet/detail.html', {'employee': person})
 
 
