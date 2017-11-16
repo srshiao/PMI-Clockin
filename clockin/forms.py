@@ -42,7 +42,7 @@ class WorkListFormHelper(FormHelper):
 
 
 class ClockoutForm(forms.ModelForm):
-    summary = forms.CharField( widget=forms.Textarea(attrs={'rows': 5, 'cols': 130,'placeholder': 'What work did you do today? (For payroll purposes)'}),validators=[RegexValidator(regex='^.{30,}$', message='The summary length has to be minimum 30 characters', code='nomatch')],label='')
+	summary = forms.CharField( widget=forms.Textarea(attrs={'rows': 5, 'cols': 130,'placeholder': 'What work did you do today? (For payroll purposes)'}),validators=[RegexValidator(regex='^.(?s).{30,}', message='The summary length has to be minimum 30 characters', code='nomatch')],label='')
     class Meta:
 
         model = Work
