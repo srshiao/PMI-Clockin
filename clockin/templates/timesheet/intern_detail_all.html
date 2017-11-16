@@ -140,8 +140,14 @@ http://www.tooplate.com/view/2082-pure-mix
         <div class="well">
             <h4 style="margin-top: 0">Details for <strong>{{exp.0.intern}}</strong></h4>
             <br>
-  <table class="table table-bordered" id = "time">
-
+  <table class="table table-bordered" style="table-layout:fixed;" id = "time" width="100%">
+	<col style="width:5%">
+	<col style="width:15%">
+	<col style="width:15%">
+	<col style="width:10%">
+	<col style="width:10%">
+	<col style="width:10%">
+	<col style="width:35%">
 
     <thead>
       <tr>
@@ -174,7 +180,7 @@ value= {{user.id}}   />
             {{user.duration}}
 
           </td>
-          <td> {{ user.summary }} </input></td>
+          <td style="word-wrap: break-word;">{{ user.summary }}</input></td>
         </tr>
       {% empty %}
         <tr>
