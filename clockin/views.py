@@ -142,7 +142,7 @@ def clockout(request, work_id):
 	
 		totalseconds = delta.total_seconds()
 		hours = totalseconds/3600
-		if hours > 9:
+		if hours > 8:
 			obj.duration = 0
 		elif hours < 0:
 			new_hours = hours+24
