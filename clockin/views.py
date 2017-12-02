@@ -158,11 +158,10 @@ def add_new(request):
 def clockout(request, work_id):
 	instance = get_object_or_404(Work, id=work_id)
 	form = ClockoutForm(request.POST or None, instance=instance)
-	if (instance.active_session == False and not request.user.is_superuser) or (instance.user == request.user):
-		return HttpResponseRedirect('/clockin/')
 	intern_obj = Intern.objects.filter(username=request.user)
 	name = intern_obj.first()
-	if (instance.active_session == False and not request.user.is_superuser) or not (instance.user == request.user):
+
+	if (instance.active_session == False):
 		return HttpResponseRedirect('/clockin/')
 
 	if form.is_valid():
