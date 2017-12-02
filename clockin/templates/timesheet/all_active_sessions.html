@@ -4,8 +4,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
-
 <style>
 div.container {
     display: inline-block;
@@ -13,14 +11,6 @@ div.container {
     overflow:auto;
 
 }
-table {
-    display: table;
-    position:relative;
-    border-collapse: separate;
-    border-spacing: 20px;
-    border-color: gray;
-}
-
 </style>
 <head>
  <script type="text/javascript" SRC="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
@@ -30,21 +20,10 @@ table {
 
     <script type="text/javascript" src="/static/collected/admin/js/vendor/jquery/jquery.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/select2.css' %}" />
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/jquery.init.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/autocomplete.init.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/select2.js' %}"></script>
-
-    <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}" />
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/vendor/select2/dist/js/select2.full.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'autocomplete_light/forward.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+
+
 <!--
 
 Template 2082 Pure Mix
@@ -80,8 +59,8 @@ http://www.tooplate.com/view/2082-pure-mix
    ================================================== -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    <!-- Google web font
-   ================================================== -->
+    <!-- Google web font 
+   ================================================== -->   
   <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,300' rel='stylesheet' type='text/css'>
             <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
 
@@ -112,6 +91,7 @@ http://www.tooplate.com/view/2082-pure-mix
               </div>
 
 
+             
 
             </div>
          </div>
@@ -120,11 +100,18 @@ http://www.tooplate.com/view/2082-pure-mix
    </nav>
 </div>
 
+
   <div  style="position: absolute; top: 25px; right: 15px; text-align:right; display:inline-block;">
-      <a href="{% url 'home' %}"><button type="button" class = "btn btn-default">Clock-in App</a>
+      {% if request.user.is_superuser %}
+        <a href="{% url 'adminhome' %}" class='btn btn-default'>Admin Home</a>
+      {% endif %}
+      <a href="{% url 'my_session' %}"><button type="button" class = "btn btn-default">Clock-in Home</a>
       <a href="{% url 'logout' %}"><button type="button" class = "btn btn-default">Log Out</a>
 
   </div>
+
+  
+
 <!-- Header section
 ================================================== -->
 <section id="header" class="header-one">
@@ -133,12 +120,12 @@ http://www.tooplate.com/view/2082-pure-mix
 
             <div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8">
           <div class="header-thumb">
-              <h1 class="wow fadeIn" data-wow-delay="1.6s">Paradyme Interns<br>Time Sheet</h1>
+              <h1 class="wow fadeIn" data-wow-delay="1.6s">All Active Interns</h1>
           </div>
             </div>
 
         </div>
-    </div>
+    </div>      
 </section>
 
 
@@ -146,20 +133,18 @@ http://www.tooplate.com/view/2082-pure-mix
 ================================================== -->
 
 
-
-
 <section id="portfolio">
-    <form action = # method = "POST"> {% csrf_token %}
-    <!--<form method="get">-->
-    <div class="well">
-        <h4 style="margin-top: 0"><strong>Interns Summary</strong></h4>
+
+    <!--div>
+    All Active Users
+      </div!-->
+   <form action = # method = "POST"> {% csrf_token %}
+        
+	<div class="well">
+        <h4 style="margin-top: 0"><strong>All Active Interns</strong></h4>
         <br>
       <div class="row">
-        <div class="form-group col-md-offset-2 col-md-3 col-sm-4">
-            {{ form.intern.label_tag }}
-            {% render_field form.intern class="form-control" %}
-        </div>
-        <div class="form-group col-md-1 col-sm-2">
+        <div class="form-group col-md-offset-5 col-md-1 col-sm-2">
             {{ form.pay_period.label_tag }}
             {% render_field form.pay_period class="form-control" %}
         </div>
@@ -167,59 +152,42 @@ http://www.tooplate.com/view/2082-pure-mix
             {{ form.month.label_tag }}
             {% render_field form.month class="form-control" %}
         </div>
-          <div class="form-group col-md-3 col-sm-4">
-            {{ form.email.label_tag }}
-            {% render_field form.email class="form-control" %}
-        </div>
 
       </div>
         <div>
-           <!-- <input class="submitform" class = "btn btn-default" type="submit" name="submitform" value="Search" />-->
-            <button class = "btn btn-default" type="submit" name="submitform" value="Search" ><i class="fa fa-search"></i> Search</button>
-            <button type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email</button>
-        </div>
-<!--      <button type="submit" class="btn btn-primary">
-        <span class="fa fa-search"></span> Search
-      </button> -->
-    </div>
-  <!--</form>-->
-
-<!--  <div>
-    {% block content %}
-
-    <form action = # method = "POST"> {% csrf_token %}
-        {{ form.as_p }}
-      <div>
-          <input class="submitform" class = "btn btn-default" type="submit" name="submitform" value="Search" />
-          <button type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email
-        </div>
-
-      </form>
-    {% endblock %}
-  </div>-->
-  <table class="table table-bordered" id = "time">
-
+   <div class="container">
+    <table class="table table-bordered" id="time">
     <thead>
       <tr>
         <th>Intern</th>
-        <th>Total Hours Worked</th>
-        <th>Work Done</th>
+        <th>Date</th>
+        <th>Time In</th>
+
+
       </tr>
     </thead>
     <tbody>
-      {% for user in exp %}
+      {% for user1 in filter %}
         <tr>
-            <td>{{ user.intern__FName}} {{user.intern__LName }}</td>
-          <td>{{ user.total}}</td>
-          <td><button type = "submit" class = "btn btn-default" name = "mybtn1" value = {{user.intern_id}}>View Summary</button></td>
+        
+
+
+          <td>{{ user1.intern }}</td>
+          <td>{{ user1.date}}</td>
+          <td>{{ user1.time_in}}</td>
+
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No data</td>
         </tr>
       {% endfor %}
     </tbody>
-  </table>
-    <a href="{% url 'add_work' %}" class='btn btn-default'>Add Hours</a>
-</section>
+  </table></div>
+	</form>
+   </div>
 
-
+  </section>
 
 <!-- Footer section
 ================================================== -->
@@ -230,16 +198,14 @@ http://www.tooplate.com/view/2082-pure-mix
             <div class="col-md-12 col-sm-12">
                 <p class="wow fadeInUp"  data-wow-delay="0.3s">Paradyme Internship - Fall 2017 Time Sheet  </p>
 
-
             </div>
             <img src= "{% static 'images/paradyme-green.png' %}" style="height:40px;width:184px;" > </img>
-
         </div>
     </div>
 </footer>
 
 
-<!-- Javascript
+<!-- Javascript 
 ================================================== -->
 <script src="{% static 'js/jquery.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -248,7 +214,5 @@ http://www.tooplate.com/view/2082-pure-mix
 <script src="{% static 'js/wow.min.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
 
-
 </body>
 </html>
-

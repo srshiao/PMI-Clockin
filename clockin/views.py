@@ -84,18 +84,50 @@ def crt_session(request):
 
 	return render(request, 'timesheet/current_session.html', context)
 
-
+def all_active(request):
+	if not request.user.is_superuser:
+		return HttpResponseRedirect('/clockin/')
+	filter = Work.objects.filter(active_session=True)
+	context = {
+		'filter':filter,
+	}
+	
+	return render(request, 'timesheet/all_active_sessions.html', context)
 
 @login_required
 def past_time(request):
 	filter1 = Work.objects.filter(user=request.user).filter(active_session=False)
-
 	intern_obj = Intern.objects.filter(username = request.user)
+	userid = intern_obj[0].id
 	name = intern_obj.first()
+	form = PastLogsForm(request.POST or None)
+	exp = Work.objects.all()
+	exp=exp.filter(intern__exact=userid)
 
+	if form.is_valid():
+		year = datetime.date.today().year
+		month = int(form.cleaned_data['month'])
+		pay_period = form.cleaned_data['pay_period']
+
+		if month in range(1,12):
+			if pay_period=='First Pay Period':
+				start_date = datetime.date(year, month, 1)
+				start_date = datetime.date(year,month,1)
+				end_date = datetime.date(year,month,15)
+			elif pay_period=='Second Pay Period':
+				start_date = datetime.date(year, month, 16)
+				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
+			else:
+				start_date = datetime.date(year, month, 1)
+				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
+			exp = exp.filter(date__range=(start_date, end_date))
+		
+	exp1 = exp.values('intern','date', 'time_in', 'time_out','duration','summary').annotate(total=Sum('duration'))
 	context = {
 		'filter1':filter1,
 		'name' : name,
+		'form': form,
+		'exp':exp1,
 	}
 
 	return render(request, 'timesheet/past_time.html', context)
@@ -131,6 +163,8 @@ def clockout(request, work_id):
 	form = ClockoutForm(request.POST or None, instance=instance)
 	intern_obj = Intern.objects.filter(username = request.user)
 	name = intern_obj.first()
+	if (instance.active_session == False and not request.user.is_superuser) or not (instance.user == request.user):
+		return HttpResponseRedirect('/clockin/')
 
 	if form.is_valid():
 		obj = form.save(commit=False)
@@ -168,6 +202,8 @@ def clockout(request, work_id):
 def edit_hours(request,work_id):
 	if not request.user.is_superuser:
 		return HttpResponseRedirect('/clockin/')
+	intern_obj = Intern.objects.filter(username = request.user)
+	name = intern_obj.first()
 
 	instance = get_object_or_404(Work, id=work_id)
 	form = WorkForm(request.POST or None, instance=instance)
@@ -195,6 +231,8 @@ def edit_hours(request,work_id):
 		return HttpResponseRedirect('/clockin/adminhome')
 	context = {
 		'form' : form,
+		'name' : name,
+		'token' : SLACK_BOT_TOKEN,
 		'pk' : work_id
 	}
 
@@ -209,12 +247,24 @@ class workDelete(DeleteView):
 @login_required
 #Clock in function
 def add_work(request):
+	if not request.user.is_superuser:
+		return HttpResponseRedirect('/clockin/')
+	intern_obj = Intern.objects.filter(username = request.user)
+	name = intern_obj.first()
 	form = WorkForm(request.POST or None);
+	obj = form.save(commit=False)
 	context = {
-		'form' : form
+		'form' : form,
+		'token' : SLACK_BOT_TOKEN,
+		'name' : name,
 	}
 	if form.is_valid():
-		obj = form.save(commit=False)
+		context = {
+		'form' : form,
+		'token' : SLACK_BOT_TOKEN,
+		'name' : name,
+		'user' : request.user,
+	}
 		obj.user = obj.intern.username
 		obj.active_session = False
 
@@ -245,7 +295,7 @@ class InternAutocomplete(autocomplete.Select2QuerySetView):
 
 #for implementing report generation functionality
 @login_required
-def sendmail(request):
+def adminhome(request):
 	if not request.user.is_superuser:
 		return HttpResponseRedirect('/clockin/')
 	form = InternSummaryForm(request.POST or None)
@@ -259,7 +309,7 @@ def sendmail(request):
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
 		#email = form.cleaned_data['email']
-		if month in range(1,12):
+		if month in range(1,13):
 			if pay_period=='First Pay Period':
 				start_date = datetime.date(year,month,1)
 				end_date = datetime.date(year,month,15)
@@ -293,7 +343,7 @@ def sendmail(request):
 			url = reverse_lazy ('edit_hours', kwargs = {'work_id':ch})
 			return HttpResponseRedirect(url)
 
-	return render(request, 'timesheet/email.html',context = {'form': form,'exp':exp1})
+	return render(request, 'timesheet/admin_home.html',context = {'form': form,'exp':exp1})
 
 
 

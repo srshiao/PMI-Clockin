@@ -122,8 +122,8 @@ http://www.tooplate.com/view/2082-pure-mix
 
   <div  style="position: absolute; top: 25px; right: 15px; text-align:right; display:inline-block;">
       <a href="{% url 'home' %}"><button type="button" class = "btn btn-default">Clock-in App</a>
+	  <a href="{% url 'active_interns' %}"><button type="button" class = "btn btn-default">Active Interns</a>
       <a href="{% url 'logout' %}"><button type="button" class = "btn btn-default">Log Out</a>
-
 
   </div>
 <!-- Header section
@@ -134,8 +134,7 @@ http://www.tooplate.com/view/2082-pure-mix
 
             <div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8">
           <div class="header-thumb">
-              <h1 class="wow fadeIn" data-wow-delay="1.6s">Paradyme Interns Time Sheet</h1>
-              <h2 class="wow fadeIn" data-wow-delay="1.6s">Time Sheet</h2>
+              <h1 class="wow fadeIn" data-wow-delay="1.6s">Paradyme Interns<br>Time Sheet</h1>
           </div>
             </div>
 
@@ -151,115 +150,74 @@ http://www.tooplate.com/view/2082-pure-mix
 
 
 <section id="portfolio">
-    <form method="get">
+    <form action = # method = "POST"> {% csrf_token %}
+    <!--<form method="get">-->
     <div class="well">
-        <h4 style="margin-top: 0"><strong>Filter Interns</strong></h4>
+        <h4 style="margin-top: 0"><strong>Interns Summary</strong></h4>
+        <br>
       <div class="row">
-        <div class="form-group col-md-offset-3 col-md-3 col-sm-4">
-          {{ filter.form.intern.label_tag }}
-
-          {% render_field filter.form.intern class="form-control" %}
+        <div class="form-group col-md-offset-2 col-md-3 col-sm-4">
+            {{ form.intern.label_tag }}
+            {% render_field form.intern class="form-control" %}
         </div>
-        <div class="form-group col-md-3 col-sm-4">
-          {{ filter.form.date_between.label_tag }}
-          {% render_field filter.form.date_between class="form-control" %}
+        <div class="form-group col-md-1 col-sm-2">
+            {{ form.pay_period.label_tag }}
+            {% render_field form.pay_period class="form-control" %}
         </div>
-
+        <div class="form-group col-md-1 col-sm-2">
+            {{ form.month.label_tag }}
+            {% render_field form.month class="form-control" %}
+        </div>
+          <div class="form-group col-md-3 col-sm-4">
+            {{ form.email.label_tag }}
+            {% render_field form.email class="form-control" %}
+        </div>
 
       </div>
-      <button type="submit" class="btn btn-primary">
+        <div>
+           <!-- <input class="submitform" class = "btn btn-default" type="submit" name="submitform" value="Search" />-->
+            <button class = "btn btn-default" type="submit" name="submitform" value="Search" ><i class="fa fa-search"></i> Search</button>
+            <button type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email</button>
+        </div>
+<!--      <button type="submit" class="btn btn-primary">
         <span class="fa fa-search"></span> Search
-      </button>
+      </button> -->
     </div>
-  </form>
+  <!--</form>-->
+
+<!--  <div>
+    {% block content %}
 
     <form action = # method = "POST"> {% csrf_token %}
+        {{ form.as_p }}
+      <div>
+          <input class="submitform" class = "btn btn-default" type="submit" name="submitform" value="Search" />
+          <button type = "submit" class = "btn btn-default" name = "myemail" value = "End Session">Send Email
+        </div>
 
+      </form>
+    {% endblock %}
+  </div>-->
   <table class="table table-bordered" id = "time">
-      
-     
+
     <thead>
       <tr>
-        <th>Edit</th>
         <th>Intern</th>
-        <th>Date</th>
-        <th>Time In</th>
-        <th>Time Out</th>
-        <th>Duration (Hours)</th>
+        <th>Total Hours Worked</th>
         <th>Work Done</th>
-        
-        
       </tr>
     </thead>
     <tbody>
-      {% for user in filter.qs %}
+      {% for user in exp %}
         <tr>
-        <td>
-                <input type="radio" name="checkbox" id="checkbox[]"
-value= {{user.id}}   />
-                </td>
-          <td>{{ user.intern}}</td>
-          <td>{{ user.date}}</td>
-          <td>{{ user.time_in}}</td>
-          <td>{{ user.time_out}}</td>
- 
-          
-          <td>
-
-            {{user.duration}}
-
-          </td>
-          <td> {{ user.summary }} </input></td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="5">No data</td>
+            <td>{{ user.intern__FName}} {{user.intern__LName }}</td>
+          <td>{{ user.total}}</td>
+          <td><button type = "submit" class = "btn btn-default" name = "mybtn1" value = {{user.intern_id}}>View Summary</button></td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
-
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Total Hours (Between Pay Period Parameters)</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td id=total_duration></td>
-        </tr>
-
-    </tbody>
-  </table>
-  <a href="{% url 'add_work' %}" class='btn btn-default'>Add Hours</a>
-  <button type = "submit" class = "btn btn-default" name = "report" value = "End Session">Get Report</button>
-  <button type = "submit" class = "btn btn-default" name = "mybtn" value = "End Session">Edit</button>
-    </form>
-
-
-
-
-
-     <script type="text/javascript">
-
- //these will hold the totals
- var total_duration = 0;
-
- //reference the rows you want to add
- //this will not include the header row
- var rows = $("#time tr:gt(0)");
- rows.children("td:nth-child(6)").each(function() {
- //each time we add the cell to the total
- total_duration += parseFloat($(this).html());
- });
- total_duration = parseFloat(total_duration.toFixed(2));
-
- //then output them to the elements
- $("#total_duration").html(total_duration);
-
- </script>
-
+    <a href="{% url 'add_work' %}" class='btn btn-default'>Add Hours</a>
 </section>
 
 
@@ -291,5 +249,7 @@ value= {{user.id}}   />
 <script src="{% static 'js/wow.min.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
 
+
 </body>
 </html>
+

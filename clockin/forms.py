@@ -68,5 +68,15 @@ class InternSummaryForm(forms.ModelForm):
      pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
      email=forms.CharField(label='Email',required=False)
 
+class PastLogsForm(forms.ModelForm):
+     class Meta:
+         model = Work
+         fields = ('intern',)
+         widgets = {
+             'intern': autocomplete.ModelSelect2(url='intern-autocomplete')
+         }
+     month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
+     pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
+
 
 

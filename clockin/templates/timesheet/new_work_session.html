@@ -179,9 +179,11 @@ function notifySlack(){
 		hours = hours - 12;
 		period = "PM";
 	}
-	else{
-		period = "AM";
+	else if(hours == 12){
+		period = "PM";
 	}
+	else
+		period = "AM";
 	if(minutes < 10){
 		fminutes = "0" + minutes
 	}
@@ -192,7 +194,7 @@ function notifySlack(){
 	var date = mm + "/" + dd + "/" + yyyy;
 	var http = new XMLHttpRequest();
 	var name = '{{name.FName}} {{name.LName}}';
-	var channel = "sam-test";
+	var channel = "clockins";
 	var message = name + " clocked in at " + time + " on " + date;
 	var token = '{{token}}';
 	var username = "Sam Bot";
