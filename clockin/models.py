@@ -12,6 +12,7 @@ from django.utils import timezone
 
 
 
+
 class Intern(models.Model):
 	def __str__(self):
    		return self.FName + " " + self.LName
@@ -20,12 +21,7 @@ class Intern(models.Model):
 	FName = models.CharField(_("First Name"), max_length = 50, default = None)
 	LName = models.CharField(_("Last Name"), max_length = 50, default = None)
 	username = models.CharField(_("Username"), max_length = 50, default = None)
-#added for autocomplete
-	#def __iter__(self):
-	#	for field in self._meta.get_fields(include_parents=True, include_hidden=False):
-	#		value = getattr(self, field.name, None)
 
-	#		yield (field, value)
 
 class Work(models.Model):
 	user = models.CharField(_("User"),  max_length = 50, default = None)

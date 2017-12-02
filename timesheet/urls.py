@@ -17,6 +17,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from django.contrib.auth import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 	url(r'^clockin/', include('clockin.urls')),
@@ -24,3 +26,4 @@ urlpatterns = [
 	url(r'^accounts/login/$', views.login, name='login'),
 
 ]
+

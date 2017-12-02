@@ -145,7 +145,7 @@ http://www.tooplate.com/view/2082-pure-mix
 
 {% block content %}
     <h4> Please provide a summary of work completed this session </h4>
-    <form method="POST" class="post-form">{% csrf_token %}
+    <form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
     {{ form.as_p }}
 
         <button type="submit" class="save btn btn-default" onclick="clockOut()">Clock Out</button>
