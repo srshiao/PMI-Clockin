@@ -148,8 +148,13 @@ http://www.tooplate.com/view/2082-pure-mix
     <form method="POST" class="post-form">{% csrf_token %}
     {{ form.as_p }}
 
-        <button type="submit" class="save btn btn-default" onclick="clockOut()">Clock Out</button>
-        <a href="{% url 'home' %}" class='btn btn-default'>Return to Work</a>
+        {% for user in userFilter %}
+          <button type="submit" class="save btn btn-default" onclick="clockOut('{{user.date}}', '{{user.time_in}}')">Clock Out</button>
+          <a href="{% url 'home' %}" class='btn btn-default'>Return to Work</a>
+        {% empty %}
+          <button type="submit" class="save btn btn-default" onclick="clockOut()">Clock Out</button>
+          <a href="{% url 'home' %}" class='btn btn-default'>Return to Work</a>
+        {% endfor %}
 
 
  </form>
@@ -157,15 +162,15 @@ http://www.tooplate.com/view/2082-pure-mix
     </div>
 
 <script type="text/javascript">
-function clockOut(){
+function clockOut(inDate, inTime){
 	var workSummary = document.getElementById('id_summary').value;
 	if(workSummary.length > 29){
-		notifySlack(workSummary);
+		notifySlack(workSummary, inDate, inTime);
 	}
 }
 
 
-function notifySlack(workSummary){
+function notifySlack(workSummary, inDate, inTime){
 	var today = new Date();
 	var dd = today.getDate();
 	var mm = today.getMonth() + 1;
@@ -188,7 +193,17 @@ function notifySlack(workSummary){
 		fminutes = "" + minutes;
 	}
 	
-	var time = hours + ":" + fminutes + " " + period
+  var clockIn_DateTime = new Date(inDate);
+  parts = inTime.match(/(\d+)\:(\d+) (\w+)/),
+  parse_hours = /a.m./i.test(parts[3]) ? parseInt(parts[1], 10) : parseInt(parts[1], 10) + 12,
+  parse_minutes = parseInt(parts[2], 10);
+  clockIn_DateTime.setHours(parse_hours);
+  clockIn_DateTime.setMinutes(parse_minutes);  
+
+  var diffTime = today - clockIn_DateTime;
+  diff_hours= Math.ceil(diffTime/3600000);
+
+  var time = hours + ":" + fminutes + " " + period
 	var date = mm + "/" + dd + "/" + yyyy;
 	var http = new XMLHttpRequest();
 	var name = '{{name.FName}} {{name.LName}}';
@@ -212,6 +227,17 @@ function notifySlack(workSummary){
 		     console.log(error);
 		 }
 	});
+
+  if (diff_hours>8) {
+    channel = "av-test";
+    message = name + " exceeded the limit of clock-in time (8 hours). The hours for this session have been reset to 0! Please contact the supervisor"; 
+    var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username ;
+    $.get(path_to_call, function(error, response, body) {
+       if (error || response.statusCode == 200) {
+           console.log(error);
+       }
+    });
+  }
 }
 
 </script>
