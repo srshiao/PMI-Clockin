@@ -128,6 +128,10 @@ def add_new(request):
 @login_required
 def clockout(request, work_id):
 	instance = get_object_or_404(Work, id=work_id)
+
+	filter = Work.objects.filter(user=request.user).filter(active_session=True)
+
+
 	form = ClockoutForm(request.POST or None, instance=instance)
 	intern_obj = Intern.objects.filter(username = request.user)
 	name = intern_obj.first()
@@ -160,6 +164,7 @@ def clockout(request, work_id):
 		'pk' : work_id,
 		'name' : name,
 		'token' : SLACK_BOT_TOKEN,
+		'userFilter' : filter,
 	}
 
 	return render(request, 'timesheet/end_work_session.html', context)
