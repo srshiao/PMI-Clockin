@@ -243,14 +243,6 @@ class workDelete(DeleteView):
 	success_url = reverse_lazy('adminhome')
 	template_name = 'timesheet/delete_work_session.html'
 
-	def get_context_data(self, **kwargs):
-		# Call the base implementation first to get a context
-		context = super(workDelete, self).get_context_data(**kwargs)
-		# Add in a QuerySet of all the books
-		context['token'] = SLACK_BOT_TOKEN
-		return context
-
-
 @login_required
 #Clock in function
 def add_work(request):
