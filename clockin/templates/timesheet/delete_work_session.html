@@ -104,8 +104,7 @@ http://www.tooplate.com/view/2082-pure-mix
         <form action="" method="POST">
             {% csrf_token %}
             <input type="submit" value="Delete" class =" save btn btn-default " onclick="notifySlack()"/>
-            <!--<input type="button" value="Cancel" onclick="window.location='{% url 'adminhome' %}'"/>-->
-            <input type="button"  value="Cancel" onclick="history.back()">
+            <input type="button"  value="Cancel" class =" save btn btn-default " onclick="history.back()">
         </form>
 
 {% endblock %}
@@ -113,7 +112,6 @@ http://www.tooplate.com/view/2082-pure-mix
 
 <script type="text/javascript">
 function notifySlack{
-	console.log(1)
 	var name = document.getElementById("id_intern").innerHTML;
 	//to deal with the HTML for the span
 	if(name.length < 80)
@@ -156,10 +154,7 @@ function notifySlack{
 	var channel = "admin-hours";
 	var message;
 
-	if(flag == 0)
-		message = "Changing session {{pk}} for " + name + ". New time set from " + time_in + " to " + time_out + " on " + date + " by " + '{{name}}';
-	else if(flag == 1)
-		message = "Deleted " + name + "'s session from " + time_in + " to " + time_out + " on " + date + ". Done by {{name}}";
+	message = "Deleted " + name + "'s session from " + time_in + " to " + time_out + " on " + date + ". Done by {{name}}";
 
 	var token = '{{token}}';
 	var username = "Sam Bot";

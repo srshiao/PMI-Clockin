@@ -106,14 +106,14 @@ def past_time(request):
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
 
-		if month in range(1,13) and year in range(2010,datetime.date.today().year+1):
+		if month in range(1,13) and year in range(2015,datetime.date.today().year+1):
 			if pay_period=='First Pay Period':
 				start_date = datetime.date(year,month,1)
 				end_date = datetime.date(year,month,15)
 			elif pay_period=='Second Pay Period':
 				start_date = datetime.date(year, month, 16)
 				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
-			elif pay_period=='Both Pay Periods':
+			else:
 				start_date = datetime.date(year, month, 1)
 				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 			exp = exp.filter(date__range=(start_date, end_date))
@@ -173,11 +173,11 @@ def clockout(request, work_id):
 	
 		totalseconds = delta.total_seconds()
 		hours = totalseconds/3600
-		if hours > 9:
+		if hours > 8:
 			obj.duration = 0
 		elif hours < 0:
 			new_hours = hours+24
-			if new_hours > 9:
+			if new_hours > 8:
 	 			new_hours = 0
 			obj.duration = new_hours 
 		else:
@@ -214,7 +214,7 @@ def edit_hours(request,work_id):
 		delta = datetime.datetime.combine(my_date,obj.time_out) - datetime.datetime.combine(my_date,obj.time_in)
 		totalseconds = delta.total_seconds()
 		hours = totalseconds/3600
-		if hours > 9:
+		if hours > 8:
 			obj.duration = 0
 		elif hours < 0:
 			new_hours = hours+24
@@ -320,14 +320,14 @@ def adminhome(request):
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
 		#email = form.cleaned_data['email']
-		if month in range(1,13) and year in range(2010,datetime.date.today().year+1):
+		if month in range(1,13) and year in range(2015,datetime.date.today().year+1):
 			if pay_period=='First Pay Period':
 				start_date = datetime.date(year,month,1)
 				end_date = datetime.date(year,month,15)
 			elif pay_period=='Second Pay Period':
 				start_date = datetime.date(year, month, 16)
 				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
-			elif pay_period=='Both Pay Periods':
+			else:
 				start_date = datetime.date(year, month, 1)
 				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 			exp = exp.filter(date__range=(start_date, end_date))
@@ -342,7 +342,7 @@ def adminhome(request):
 	if request.GET.get('myemail'):
 		html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
 		email = form.cleaned_data['email']
-		send_mail('Test email', 'message', 'PMIClockin@gmail.com', [email], html_message=html_message)
+		send_mail('Intern Hours Summary', 'message', 'PMIClockin@gmail.com', [email], html_message=html_message)
 
 	if request.POST.get('mybtn1'):
 		che=request.POST.get('mybtn1')
