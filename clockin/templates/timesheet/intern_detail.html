@@ -140,11 +140,11 @@ http://www.tooplate.com/view/2082-pure-mix
 
          <div class="well">
              {% if year and month %}
-                <h4 style="margin-top: 0">Details for <strong>{{exp.0.intern}}</strong> during the <strong>{{ pay_period}}</strong> of <strong>{{ month }}</strong>,<strong>{{ year }}</strong></h4>
+                <h4 style="margin-top: 0">Details for <strong>{{exp.0.intern}}</strong> during the <strong>{{ pay_period}}</strong> of <strong>{{ month }}</strong> <strong>{{ year }}</strong></h4>
              {% elif year and not month %}
                 <h4 style="margin-top: 0">Details for <strong>{{exp.0.intern}}</strong> during the year <strong>{{ year }}</strong></h4>
              {% else %}
-                <h4 style="margin-top: 0">Details for <strong>{{exp.0.intern}}</strong></h4>
+                <h4 style="margin-top: 0">All Details for <strong>{{exp.0.intern}}</strong></h4>
              {% endif %}
              <br>
   <table class="table table-bordered" style="table-layout:fixed;" id = "time" width="100%">

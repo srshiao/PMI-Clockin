@@ -100,11 +100,17 @@ def past_time(request):
 	form = PastLogsForm(request.POST or None)
 	exp = Work.objects.all()
 	exp=exp.filter(intern__exact=userid)
-
+	context = {
+		'name' : name,
+	}
 	if form.is_valid():
 		year = int(form.cleaned_data['year'])
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
+		context['year'] = year
+		month_name = calendar.month_name[month]
+		context['month'] = month_name
+		context['pay_period'] = pay_period
 
 		if month in range(1,13) and year in range(2015,datetime.date.today().year+1):
 			if pay_period=='First Pay Period':
@@ -122,11 +128,8 @@ def past_time(request):
 			end_date = datetime.date(year, 12, 31)
 			exp = exp.filter(date__range=(start_date, end_date))
 
-	context = {
-		'name' : name,
-		'form': form,
-		'exp':exp,
-	}
+	context['form'] = form
+	context['exp'] = exp
 
 	return render(request, 'timesheet/past_time.html', context)
 

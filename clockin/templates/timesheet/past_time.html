@@ -140,8 +140,14 @@ http://www.tooplate.com/view/2082-pure-mix
       </div>
    <form action = # method = "POST"> {% csrf_token %}
         
-	<div class="well">
-        <h4 style="margin-top: 0"><strong>Interns Summary</strong></h4>
+	<div class="well">           
+		     {% if year and month %}
+                <h4 style="margin-top: 0">Details for the <strong>{{ pay_period}}</strong> of <strong>{{ month }}</strong> <strong>{{ year }}</strong></h4>
+             {% elif year and not month %}
+                <h4 style="margin-top: 0">Details for the year <strong>{{ year }}</strong></h4>
+             {% else %}
+                <h4 style="margin-top: 0"><strong>All Details</strong></h4>
+             {% endif %}
         <br>
       <div class="row">
         <div class="form-group col-md-offset-4 col-sm-2">

@@ -103,70 +103,13 @@ http://www.tooplate.com/view/2082-pure-mix
           <p>Are you sure you want to delete this record?</p>
         <form action="" method="POST">
             {% csrf_token %}
-            <input type="submit" value="Delete" class =" save btn btn-default " onclick="notifySlack()"/>
+            <input type="submit" value="Delete" class =" save btn btn-default"/>
             <input type="button"  value="Cancel" class =" save btn btn-default " onclick="history.back()">
         </form>
 
 {% endblock %}
     </div>
 
-<script type="text/javascript">
-function notifySlack{
-	var name = document.getElementById("id_intern").innerHTML;
-	//to deal with the HTML for the span
-	if(name.length < 80)
-		name = "None";
-	else
-		name = name.toString().substring(72,name.length - 11);
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth() + 1;
-	var yyyy = today.getFullYear();
-	var hours = today.getHours();
-	var minutes = today.getMinutes();
-	var fminutes;
-	var period;
-	if(hours > 12){
-		hours = hours - 12;
-		period = "PM";
-	}
-	else if(hours == 12){
-		period = "PM";
-	}
-	else
-		period = "AM";
-	if(minutes < 10){
-		fminutes = "0" + minutes;
-	}
-	else{
-		fminutes = "" + minutes;
-	}
-	var time_in = document.getElementById("id_time_in").value;
-	if(time_in.charAt(0) == '0')
-		time_in = time_in.substring(1);
-	var time_out = document.getElementById("id_time_out").value;
-	if(time_out.charAt(0) == '0')
-		time_out = time_out.substring(1);
-	var time = hours + ":" + fminutes + " " + period;
-	var date = mm + "/" + dd + "/" + yyyy;
-	var http = new XMLHttpRequest();
-	//var name = "abcd";
-	var channel = "admin-hours";
-	var message;
-
-	message = "Deleted " + name + "'s session from " + time_in + " to " + time_out + " on " + date + ". Done by {{name}}";
-
-	var token = '{{token}}';
-	var username = "Sam Bot";
-	console.log(message);
-	var path_to_call = "https://slack.com/api/chat.postMessage?token=" + token + "&channel=" + channel + "&text=" + message + "&username=" + username;
-	$.get(path_to_call, function(error, response, body) {
-		 if (error || response.statusCode == 200) {
-		     console.log(error);
-		 }
-	});
-}
-</script>
 </section>
 
 
