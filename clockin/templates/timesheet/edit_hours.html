@@ -141,7 +141,7 @@ http://www.tooplate.com/view/2082-pure-mix
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default" onclick="notifySlack(0)">Confirm Edit</button>
-        <a href="{% url 'work_delete' pk %}" class='btn btn-default' oncllick="notifySlack(1)">Delete Record</a>
+        <a href="{% url 'work_delete' pk %}" class='btn btn-default' onclick="notifySlack(1)">Delete Record</a>
 
         <a href="{% url 'adminhome' %}" class='btn btn-default'>Back</a>
         <!--<input type="button" class= "btn btn-default " value="Back" onclick="history.back()">-->
