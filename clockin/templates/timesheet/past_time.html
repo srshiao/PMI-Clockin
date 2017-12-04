@@ -144,13 +144,17 @@ http://www.tooplate.com/view/2082-pure-mix
         <h4 style="margin-top: 0"><strong>Interns Summary</strong></h4>
         <br>
       <div class="row">
-        <div class="form-group col-md-offset-5 col-md-1 col-sm-2">
+        <div class="form-group col-md-offset-4 col-sm-2">
             {{ form.pay_period.label_tag }}
             {% render_field form.pay_period class="form-control" %}
         </div>
-        <div class="form-group col-md-1 col-sm-2">
+        <div class="form-group col-md-1 col-sm-1">
             {{ form.month.label_tag }}
             {% render_field form.month class="form-control" %}
+        </div>
+        <div class="form-group col-md-1 col-sm-1">
+            {{ form.year.label_tag }}
+            {% render_field form.year class="form-control" %}
         </div>
 
       </div>
@@ -176,7 +180,7 @@ http://www.tooplate.com/view/2082-pure-mix
         
 
 
-          <td>{{ name }}</td>
+          <td>{{ user1.intern }}</td>
           <td>{{ user1.date}}</td>
           <td>{{ user1.time_in}}</td>
           <td>{{ user1.time_out}}</td>

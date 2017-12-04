@@ -102,13 +102,12 @@ def past_time(request):
 	exp=exp.filter(intern__exact=userid)
 
 	if form.is_valid():
-		year = datetime.date.today().year
+		year = int(form.cleaned_data['year'])
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
 
-		if month in range(1,12):
+		if month in range(1,13) and year in range(2015,datetime.date.today().year+1):
 			if pay_period=='First Pay Period':
-				start_date = datetime.date(year, month, 1)
 				start_date = datetime.date(year,month,1)
 				end_date = datetime.date(year,month,15)
 			elif pay_period=='Second Pay Period':
@@ -116,15 +115,17 @@ def past_time(request):
 				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
 			else:
 				start_date = datetime.date(year, month, 1)
-				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
+				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 			exp = exp.filter(date__range=(start_date, end_date))
-		
-	exp1 = exp.values('intern','date', 'time_in', 'time_out','duration','summary').annotate(total=Sum('duration'))
+		elif year in range(2015,(datetime.date.today().year)+1):
+			start_date = datetime.date(year, 1, 1)
+			end_date = datetime.date(year, 12, 31)
+			exp = exp.filter(date__range=(start_date, end_date))
+
 	context = {
-		'filter1':filter1,
 		'name' : name,
 		'form': form,
-		'exp':exp1,
+		'exp':exp,
 	}
 
 	return render(request, 'timesheet/past_time.html', context)
@@ -160,7 +161,6 @@ def clockout(request, work_id):
 	form = ClockoutForm(request.POST or None, instance=instance)
 	intern_obj = Intern.objects.filter(username=request.user)
 	name = intern_obj.first()
-
 	if (instance.active_session == False):
 		return HttpResponseRedirect('/clockin/')
 
@@ -173,11 +173,11 @@ def clockout(request, work_id):
 	
 		totalseconds = delta.total_seconds()
 		hours = totalseconds/3600
-		if hours > 9:
+		if hours > 8:
 			obj.duration = 0
 		elif hours < 0:
 			new_hours = hours+24
-			if new_hours > 9:
+			if new_hours > 8:
 	 			new_hours = 0
 			obj.duration = new_hours 
 		else:
@@ -214,7 +214,7 @@ def edit_hours(request,work_id):
 		delta = datetime.datetime.combine(my_date,obj.time_out) - datetime.datetime.combine(my_date,obj.time_in)
 		totalseconds = delta.total_seconds()
 		hours = totalseconds/3600
-		if hours > 9:
+		if hours > 8:
 			obj.duration = 0
 		elif hours < 0:
 			new_hours = hours+24
@@ -239,6 +239,13 @@ class workDelete(DeleteView):
 	model = WorkForm
 	success_url = reverse_lazy('adminhome')
 	template_name = 'timesheet/delete_work_session.html'
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(workDelete, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['token'] = SLACK_BOT_TOKEN
+		return context
 
 
 @login_required
@@ -308,24 +315,22 @@ def adminhome(request):
 		obj = form.save(commit=False)
 		if obj.intern:
 			user = obj.intern.username
-			exp= Work.objects.filter(user__contains=user)
+			exp= Work.objects.filter(user__exact=user)
 		year = int(form.cleaned_data['year'])
 		month = int(form.cleaned_data['month'])
 		pay_period = form.cleaned_data['pay_period']
 		#email = form.cleaned_data['email']
-		if month in range(1,13) and year in range(2010,datetime.date.today().year+1):
+		if month in range(1,13) and year in range(2015,datetime.date.today().year+1):
 			if pay_period=='First Pay Period':
 				start_date = datetime.date(year,month,1)
 				end_date = datetime.date(year,month,15)
-				exp = exp.filter(date__range=(start_date,end_date))
 			elif pay_period=='Second Pay Period':
 				start_date = datetime.date(year, month, 16)
 				end_date = datetime.date(year, month, calendar.monthrange(year,month)[1])
-				exp = exp.filter(date__range=(start_date, end_date))
-			elif pay_period=='Both Pay Periods':
+			else:
 				start_date = datetime.date(year, month, 1)
 				end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
-				exp = exp.filter(date__range=(start_date, end_date))
+			exp = exp.filter(date__range=(start_date, end_date))
 		elif year in range(2015,(datetime.date.today().year)+1):
 			start_date = datetime.date(year, 1, 1)
 			end_date = datetime.date(year, 12, 31)
@@ -333,6 +338,11 @@ def adminhome(request):
 
 
 	exp1 = exp.values('intern_id','intern__FName','intern__LName').annotate(total=Sum('duration'))
+
+	if request.GET.get('myemail'):
+		html_message = loader.render_to_string('timesheet/get_report.html', {'exp':exp1})
+		email = form.cleaned_data['email']
+		send_mail('Intern Hours Summary', 'message', 'PMIClockin@gmail.com', [email], html_message=html_message)
 
 	if request.POST.get('mybtn1'):
 		che=request.POST.get('mybtn1')

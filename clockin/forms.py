@@ -83,15 +83,6 @@ class InternSummaryForm(forms.ModelForm):
 
 
 
-
-
-
-
-
-
-
-
-
 class PastLogsForm(forms.ModelForm):
      class Meta:
          model = Work
@@ -101,6 +92,7 @@ class PastLogsForm(forms.ModelForm):
          }
      month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
      pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
+     year = forms.CharField(required=False, label='Year', widget=forms.Select(choices=YEARS))
 
 
 
