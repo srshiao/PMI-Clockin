@@ -49,7 +49,7 @@ class ClockoutForm(forms.ModelForm):
     class Meta:
 
         model = Work
-        fields = ('summary',)
+        fields = ('summary','image',)
         
 class ClockinForm(forms.ModelForm):
     class Meta:

@@ -149,13 +149,12 @@ http://www.tooplate.com/view/2082-pure-mix
              <br>
   <table class="table table-bordered" style="table-layout:fixed;" id = "time" width="100%">
 	<col style="width:5%">
+	<col style="width:10%">
+	<col style="width:7%">
+	<col style="width:6%">
+	<col style="width:6%">
+	<col style="width:5%">
 	<col style="width:15%">
-	<col style="width:10%">
-	<col style="width:10%">
-	<col style="width:10%">
-	<col style="width:10%">
-	<col style="width:25%">
-
 
     <thead>
       <tr>
@@ -166,7 +165,7 @@ http://www.tooplate.com/view/2082-pure-mix
           <th><strong>Time Out</strong></th>
           <th><strong>Duration (Hours)</strong></th>
           <th><strong>Work Done</strong></th>
-
+          <th><strong>Uploaded Image</strong></th>
 
 
       </tr>
@@ -190,7 +189,17 @@ value= {{user.id}}   />
 
           </td>
           <td> {{ user.summary }} </input></td>
+          {% if user.image %}
+           <td><img src ='{{user.image.url}}'  width="100" height="100"/>
+            <script>
+                $("img").hover(function(){
+                    $(this).css({'width':800,'height':500});
+                    }, function(){
+                     $(this).css({'width':800,'height':50});
+                });
+            </script></td>
 
+          {% endif %}
         </tr>
       {% empty %}
         <tr>
@@ -233,8 +242,15 @@ value= {{user.id}}   />
  //then output them to the elements
  $("#total_duration").html(total_duration);
 
- </script>
+ $("#thumb").click(function ()
+    {
+        $(this).attr('width','400');
+        $(this).attr('height','300');
+    });
 
+
+
+</script>
 </section>
 
 

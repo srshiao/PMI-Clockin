@@ -142,7 +142,7 @@ def add_new(request):
 	context = {
 		'form' : form,
 		'name' : name,
-		'token' : SLACK_BOT_TOKEN,
+		#'token' : SLACK_BOT_TOKEN,
 	}
 	if form.is_valid():
 		obj = form.save(commit=False)
@@ -161,7 +161,7 @@ def add_new(request):
 @login_required
 def clockout(request, work_id):
 	instance = get_object_or_404(Work, id=work_id)
-	form = ClockoutForm(request.POST or None, instance=instance)
+	form = ClockoutForm(request.POST or None,request.FILES or None, instance=instance)
 	intern_obj = Intern.objects.filter(username=request.user)
 	name = intern_obj.first()
 	if (instance.active_session == False):
@@ -193,7 +193,7 @@ def clockout(request, work_id):
 		'form' : form,
 		'pk' : work_id,
 		'name' : name,
-		'token' : SLACK_BOT_TOKEN,
+		#'token' : SLACK_BOT_TOKEN,
 	}
 
 	return render(request, 'timesheet/end_work_session.html', context)
@@ -242,14 +242,6 @@ class workDelete(DeleteView):
 	model = WorkForm
 	success_url = reverse_lazy('adminhome')
 	template_name = 'timesheet/delete_work_session.html'
-
-	def get_context_data(self, **kwargs):
-		# Call the base implementation first to get a context
-		context = super(workDelete, self).get_context_data(**kwargs)
-		# Add in a QuerySet of all the books
-		context['token'] = SLACK_BOT_TOKEN
-		return context
-
 
 @login_required
 #Clock in function
@@ -309,7 +301,7 @@ def adminhome(request):
 	year=int(0)
 	month=int(0)
 	pay_period=""
-	form = InternSummaryForm(request.GET or None)
+	form = InternSummaryForm(request.GET or None,request.FILES or None)
 
 	exp = Work.objects.all()
 
