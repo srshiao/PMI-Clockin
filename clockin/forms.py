@@ -11,6 +11,7 @@ from django.core.validators import RegexValidator
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import re
+import datetime
 
 class WorkForm(forms.ModelForm):
 
@@ -62,6 +63,10 @@ PAY_PERIOD=[('First Pay Period','First'),('Second Pay Period','Second'),('Both P
 YEARS = [(x,x) for x in range(2015,datetime.date.today().year+1)]
 YEARS.insert(0,(0,'---'))
 
+if(datetime.date.today().day > 15):
+	initial_pay_period = "Second Pay Period"
+else:
+	initial_pay_period = "First Pay Period"
 class InternSummaryForm(forms.ModelForm):
      class Meta:
          model = Work
@@ -72,12 +77,9 @@ class InternSummaryForm(forms.ModelForm):
      #def custom_validate_email(email):
       #   if not(re.match(r'\b[\w.-]+@[\w.-]+.\w{2,4}\b',email)!=None):
        #      raise ValidationError('Email format is incorrect')
-
-
-
-     month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
-     year = forms.CharField(required=False,label = 'Year',widget=forms.Select(choices=YEARS))
-     pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
+     month = forms.CharField(required=False,initial=datetime.date.today().month,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
+     year = forms.CharField(required=False,label = 'Year',initial=datetime.date.today().year,widget=forms.Select(choices=YEARS))
+     pay_period = forms.CharField(label='Pay period',initial=initial_pay_period, widget=forms.Select(choices=PAY_PERIOD))
      email=forms.EmailField(label='Email',required=False)
 
 
@@ -90,9 +92,9 @@ class PastLogsForm(forms.ModelForm):
          widgets = {
              'intern': autocomplete.ModelSelect2(url='intern-autocomplete')
          }
-     month = forms.CharField(required=False,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
-     pay_period = forms.CharField(label='Pay period',widget=forms.Select(choices=PAY_PERIOD))
-     year = forms.CharField(required=False, label='Year', widget=forms.Select(choices=YEARS))
+     month = forms.CharField(required=False,initial=datetime.date.today().month,label = 'Month',widget=forms.Select(choices=MONTH_CHOICE))
+     pay_period = forms.CharField(label='Pay period',initial=initial_pay_period,widget=forms.Select(choices=PAY_PERIOD))
+     year = forms.CharField(required=False, initial=datetime.date.today().year, label='Year', widget=forms.Select(choices=YEARS))
 
 
 
