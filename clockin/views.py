@@ -99,7 +99,7 @@ def past_time(request):
 	name = intern_obj.first()
 	form = PastLogsForm(request.POST or None)
 	exp = Work.objects.all()
-	exp=exp.filter(intern__exact=userid)
+	exp=exp.filter(intern__exact=userid).filter(active_session=False)
 	context = {
 		'name' : name,
 	}
@@ -341,7 +341,7 @@ def adminhome(request):
 
 	if request.POST.get('mybtn1'):
 		che=request.POST.get('mybtn1')
-		exp=exp.filter(intern__exact=che)
+		exp=exp.filter(intern__exact=che).filter(active_session=False)
 		month_name = calendar.month_name[month]
 		return render(request, 'timesheet/intern_detail.html', context={'exp': exp,'pay_period':pay_period,'month':month_name,'year':year})
 
